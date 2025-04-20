@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StyleHaven | Checkout</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">StyleHaven</div>
+      <div class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="underline-effect">Home</a></li>
+        <li><a href="shop.html" class="underline-effect">Shop</a></li>
+        <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+        <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+        <li class="profile-menu">
+          <a href="javascript:void(0)" id="profile-btn" class="underline-effect"><i class="fas fa-user"></i></a>
+          <ul class="dropdown" id="profile-dropdown">
+            <li><a href="profile.html">Profile</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="#" id="logout-btn">Logout</a></li>
+          </ul>
+        </li>
+        <li id="loginNav"><a href="login.html" class="underline-effect">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="checkout-section">
+    <h1>Checkout</h1>
+    <form class="checkout-form">
+      <div class="form-group">
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" placeholder="Enter your full name" />
+      </div>
+      <div class="form-group">
+        <label for="address">Shipping Address:</label>
+        <textarea id="address" placeholder="Enter your shipping address"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="payment">Payment Method:</label>
+        <select id="payment">
+          <option value="credit-card">Credit Card</option>
+          <option value="paypal">PayPal</option>
+          <option value="bank-transfer">Bank Transfer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn">Complete Order</button>
+      </div>
+    </form>
+  </section>
+
+  <script>
+    // Mobile menu toggle
+    document.getElementById("menu-toggle").addEventListener("click", () => {
+      document.getElementById("nav-links").classList.toggle("show");
+    });
+
+    // Auth-based nav display
+    const token = localStorage.getItem('token');
+    const profileMenu = document.querySelector('.profile-menu');
+    const loginNav = document.getElementById('loginNav');
+    if (token) {
+      profileMenu.style.display = 'inline-block';
+      loginNav.style.display = 'none';
+    } else {
+      profileMenu.style.display = 'none';
+      loginNav.style.display = 'inline-block';
+    }
+
+    // Profile dropdown toggle
+    const profileBtn = document.getElementById('profile-btn');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    profileBtn.addEventListener('click', e => {
+      e.preventDefault();
+      profileDropdown.classList.toggle('active');
+    });
+    document.addEventListener('click', e => {
+      if (!profileMenu.contains(e.target)) {
+        profileDropdown.classList.remove('active');
+      }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', e => {
+      e.preventDefault();
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
