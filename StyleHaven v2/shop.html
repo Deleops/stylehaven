@@ -13,7 +13,6 @@
       background-color: #f9f9f9;
       color: #333;
     }
-   
     .shop-header {
       text-align: center;
       padding: 3rem 1rem 2rem;
@@ -22,8 +21,6 @@
       font-size: 2.5rem;
       margin-bottom: 1rem;
     }
-
-
     #searchInput {
       padding: 0.75rem 1.25rem;
       width: 60%;
@@ -90,11 +87,9 @@
       background: #e63946;
       color: white;
     }
- 
   </style>
 </head>
 <body>
-
 <header>
   <nav class="navbar">
     <a href="index.html" class="logo">
@@ -104,11 +99,11 @@
       <i class="fas fa-bars"></i>
     </div>
     <ul class="nav-links" id="nav-links">
-      <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
-      <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
-      <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+      <li><a href="shop.html"><i class="fas fa-store"></i></a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i></a></li>
+      <li><a href="cart.html"><i class="fas fa-shopping-cart"></i></a></li>
       <li class="profile-menu" id="profileMenu">
-        <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+        <a href="#" id="profileToggle"><i class="fas fa-user"></i></a>
         <ul class="dropdown" id="profileDropdown">
           <li><a href="profile.html">My Profile</a></li>
           <li><a href="dashboard.html">Dashboard</a></li>
@@ -116,11 +111,10 @@
           <li><a href="#" id="logoutLink">Logout</a></li>
         </ul>
       </li>
-      <li id="loginNav"><a href="login.html" class="underline-effect">Login</a></li>
+      <li id="loginNav"><a href="login.html">Login</a></li>
     </ul>
   </nav>
 </header>
-
 <section class="shop-section">
   <div class="shop-header">
     <h1>Shop Our Collection</h1>
@@ -128,42 +122,84 @@
   </div>
   <div class="product-list" id="productList"></div>
 </section>
-
 <script>
   const products = [
     { name: "Classic White Tee", price: 25, image: "cwt.jpg" },
     { name: "Blue Denim Jacket", price: 70, image: "bdj.jpg" },
     { name: "Sporty Sneakers", price: 45, image: "ss.jpg" },
-    { name: "Boho Summer Dress", price: 55, image: "images/product6.jpg" }
+    { name: "Boho Summer Dress", price: 55, image: "bsd.jpg" }
   ];
+
   const productList = document.getElementById("productList");
   const searchInput = document.getElementById("searchInput");
+  let filteredProducts = products;
+
+  function isInWishlist(name) {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    return wishlist.some(item => item.name === name);
+  }
+
+  function toggleWishlist(name) {
+    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    const product = products.find(p => p.name === name);
+    const index = wishlist.findIndex(item => item.name === name);
+
+    if (index > -1) {
+      wishlist.splice(index, 1);
+    } else {
+      wishlist.push(product);
+    }
+
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    displayProducts(filteredProducts);
+  }
+
+  function addToCart(name) {
+    const product = products.find(p => p.name === name);
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existing = cart.find(item => item.name === name);
+
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ ...product, quantity: 1 });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${name} added to cart!`);
+  }
 
   function displayProducts(items) {
     productList.innerHTML = "";
     items.forEach(p => {
+      const isWishlisted = isInWishlist(p.name);
       productList.innerHTML += `
         <div class="product-card">
           <img src="${p.image}" alt="${p.name}" />
           <h3>${p.name}</h3>
           <p>$${p.price.toFixed(2)}</p>
-          <button>Add to Cart</button>
-<button class="wishlist" onclick="toggleWishlist('${p.name}', this)">
-  <i class="${isInWishlist(p.name) ? 'fas' : 'far'} fa-heart ${isInWishlist(p.name) ? 'wishlisted' : ''}"></i>
-</button>
-
-
-
-
+          <button class="add-to-cart-btn" data-name="${p.name}">Add to Cart</button>
+          <button class="wishlist" onclick="toggleWishlist('${p.name}')">
+            <i class="${isWishlisted ? 'fas' : 'far'} fa-heart ${isWishlisted ? 'wishlisted' : ''}"></i>
+          </button>
         </div>
       `;
     });
+
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const name = button.getAttribute('data-name');
+        addToCart(name);
+      });
+    });
   }
+
   displayProducts(products);
 
   searchInput.addEventListener("input", () => {
     const val = searchInput.value.toLowerCase();
-    displayProducts(products.filter(p => p.name.toLowerCase().includes(val)));
+    filteredProducts = products.filter(p => p.name.toLowerCase().includes(val));
+    displayProducts(filteredProducts);
   });
 
   document.getElementById("menu-toggle").addEventListener("click", () => {
@@ -197,29 +233,6 @@
     localStorage.removeItem('token');
     window.location.href = 'index.html';
   });
-   // Check if product is already wishlisted
-   function isInWishlist(name) {
-    const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    return wishlist.some(item => item.name === name);
-  }
-
-  // Toggle wishlist state
-  function toggleWishlist(name) {
-    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    const product = products.find(p => p.name === name);
-
-    const index = wishlist.findIndex(item => item.name === name);
-    if (index > -1) {
-      wishlist.splice(index, 1); // remove if already in wishlist
-    } else {
-      wishlist.push(product); // add if not in wishlist
-    }
-
-    localStorage.setItem('wishlist', JSON.stringify(wishlist));
-    displayProducts(products); // re-render to update heart icon
-  }
-
 </script>
-
 </body>
 </html>

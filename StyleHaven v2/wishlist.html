@@ -136,9 +136,26 @@
   }
 
   function addToCart(index) {
-    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    alert(`${wishlist[index].name} added to cart!`);
+  const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const selectedItem = wishlist[index];
+
+  const existingItemIndex = cart.findIndex(item => item.name === selectedItem.name);
+  if (existingItemIndex !== -1) {
+    cart[existingItemIndex].quantity += 1;
+  } else {
+    cart.push({ ...selectedItem, quantity: 1 });
   }
+
+  // Save cart and remove from wishlist
+  localStorage.setItem("cart", JSON.stringify(cart));
+  wishlist.splice(index, 1);
+  localStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+  renderWishlist(); // Re-render wishlist
+  alert(`${selectedItem.name} moved to cart!`);
+}
+
 
   function removeItem(index) {
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];

@@ -7,9 +7,90 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    .cart-section {
+      padding: 3rem 1rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .cart-section h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+    .cart-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    .cart-item {
+      background: #fff;
+      border-radius: 1rem;
+      overflow: hidden;
+      padding: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .cart-item img {
+      width: 100%;
+      max-width: 300px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+    .item-details {
+      width: 100%;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .item-details h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .item-details p {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .item-details input[type="number"] {
+      padding: 0.25rem;
+      width: 60px;
+      text-align: center;
+    }
+    .remove-btn {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 1.5rem;
+      background: #ccc;
+      color: black;
+      cursor: pointer;
+    }
+    .cart-summary {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .cart-summary h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      background-color: #e63946;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
- 
 <header>
   <nav class="navbar">
     <a href="index.html" class="logo">
@@ -36,106 +117,125 @@
   </nav>
 </header>
 
+<section class="cart-section">
+  <h1>Your Cart</h1>
+  <div class="cart-container" id="cartContainer"></div>
+  <div class="cart-summary">
+    <h3>Total: $<span id="totalPrice">0.00</span></h3>
+    <a href="checkout.html" class="btn">Proceed to Checkout</a>
+  </div>
+</section>
 
-  <section class="cart-section">
-    <h1>Your Cart</h1>
-    <div class="cart-container" id="cartContainer">
-      <!-- Items will be dynamically inserted here -->
-    </div>
-    <div class="cart-summary">
-      <h3>Total: $<span id="totalPrice">0.00</span></h3>
-      <a href="checkout.html" class="btn">Proceed to Checkout</a>
-    </div>
-  </section>
+<script>
+  // Mobile menu toggle
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("nav-links").classList.toggle("show");
+  });
 
+  // Auth-based nav links
+  const token = localStorage.getItem('token');
+  const profileMenu = document.getElementById('profileMenu');
+  const loginNav = document.getElementById('loginNav');
+  if (token) {
+    profileMenu.style.display = 'inline-block';
+    loginNav.style.display = 'none';
+  } else {
+    profileMenu.style.display = 'none';
+    loginNav.style.display = 'inline-block';
+  }
 
-  <script>
-    // Mobile menu toggle
-    document.getElementById("menu-toggle").addEventListener("click", () => {
-      document.getElementById("nav-links").classList.toggle("show");
-    });
-  
-    // Auth-based nav links
-    const token = localStorage.getItem('token');
-    const profileMenu = document.getElementById('profileMenu');
-    const loginNav = document.getElementById('loginNav');
-    if (token) {
-      profileMenu.style.display = 'inline-block';
-      loginNav.style.display = 'none';
-    } else {
-      profileMenu.style.display = 'none';
-      loginNav.style.display = 'inline-block';
+  // Profile dropdown toggle
+  document.getElementById('profileToggle').addEventListener('click', (e) => {
+    e.preventDefault();
+    profileMenu.classList.toggle('active');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!profileMenu.contains(e.target)) {
+      profileMenu.classList.remove('active');
     }
-  
-    // Profile dropdown toggle
-    document.getElementById('profileToggle').addEventListener('click', (e) => {
-      e.preventDefault();
-      profileMenu.classList.toggle('active');
-    });
-  
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!profileMenu.contains(e.target)) {
-        profileMenu.classList.remove('active');
-      }
-    });
-  
-    // Logout
-    document.getElementById('logoutLink').addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.removeItem('token');
-      window.location.href = 'index.html';
-    });
-  
-  
+  });
 
-    // Sample cart items
-    const cartItems = [
-      { name: "Classic White Tee", price: 25.00, image: "images/product3.jpg", quantity: 1 },
-      { name: "Sporty Sneakers", price: 45.00, image: "images/product5.jpg", quantity: 2 }
-    ];
+  // Logout
+  document.getElementById('logoutLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = 'index.html';
+  });
 
-    const cartContainer = document.getElementById("cartContainer");
-    const totalPriceElement = document.getElementById("totalPrice");
+  const cartContainer = document.getElementById("cartContainer");
+  const totalPriceElement = document.getElementById("totalPrice");
 
-    function renderCart() {
-      cartContainer.innerHTML = "";
-      let total = 0;
-      cartItems.forEach((item, index) => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
-        cartContainer.innerHTML += `
-          <div class="cart-item">
-            <img src="${item.image}" alt="${item.name}" />
-            <div class="item-details">
-              <h3>${item.name}</h3>
-              <p>Price: $${item.price.toFixed(2)}</p>
-              <p>Quantity: <input type="number" min="1" value="${item.quantity}" data-index="${index}" class="qty-input"></p>
-              <button class="remove-btn" data-index="${index}">Remove</button>
-            </div>
+  function renderCart() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cartContainer.innerHTML = "";
+    let total = 0;
+    let totalItems = 0;
+
+    if (cart.length === 0) {
+  cartContainer.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>Your cart is empty.</p>";
+  totalPriceElement.textContent = "0.00";
+
+  const summary = document.querySelector(".cart-summary");
+  if (summary) {
+    summary.querySelector("h3").innerHTML = `Total (0 items): $<span id="totalPrice">0.00</span>`;
+  }
+
+  return;
+}
+
+    cart.forEach((item, index) => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+      totalItems += item.quantity;
+
+      cartContainer.innerHTML += `
+        <div class="cart-item" style="display:flex; gap:1rem; margin-bottom:1.5rem;">
+          <img src="${item.image}" alt="${item.name}" style="width:120px; height:160px; object-fit:cover; border-radius:8px;" />
+          <div class="item-details" style="flex-grow:1;">
+            <h3>${item.name}</h3>
+            <p>Price: $${item.price.toFixed(2)}</p>
+            <p>Quantity: 
+              <input type="number" min="1" value="${item.quantity}" data-index="${index}" class="qty-input" style="width:60px;">
+            </p>
+            <button class="remove-btn" data-index="${index}">Remove</button>
           </div>
-        `;
-      });
-      totalPriceElement.textContent = total.toFixed(2);
+        </div>
+      `;
+    });
+
+    totalPriceElement.textContent = total.toFixed(2);
+
+    // Optional: show total item count above total price
+    const summary = document.querySelector(".cart-summary");
+    if (summary) {
+      summary.querySelector("h3").innerHTML = `Total (${totalItems} items): $<span id="totalPrice">${total.toFixed(2)}</span>`;
     }
+  }
 
-    cartContainer.addEventListener("input", e => {
-      if (e.target.classList.contains("qty-input")) {
-        const idx = e.target.getAttribute("data-index");
-        cartItems[idx].quantity = parseInt(e.target.value);
-        renderCart();
-      }
-    });
+  cartContainer.addEventListener("input", (e) => {
+    if (e.target.classList.contains("qty-input")) {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const idx = e.target.getAttribute("data-index");
+      cart[idx].quantity = parseInt(e.target.value) || 1;
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+  });
 
-    cartContainer.addEventListener("click", e => {
-      if (e.target.classList.contains("remove-btn")) {
-        const idx = e.target.getAttribute("data-index");
-        cartItems.splice(idx, 1);
-        renderCart();
-      }
-    });
+  cartContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove-btn")) {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const idx = e.target.getAttribute("data-index");
+      cart.splice(idx, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+  });
 
-    renderCart();
-  </script>
+  renderCart();
+</script>
+
 </body>
 </html>
