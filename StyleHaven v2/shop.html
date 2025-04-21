@@ -30,21 +30,24 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     .product-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      padding: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .product-card {
-      background: #fff;
-      border-radius: 1rem;
-      overflow: hidden;
-      padding: 1rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  /* new: center any items (so single cards sit in the middle) */
+  justify-content: center;
+  justify-items: center;
+}
+
+.product-card {
+  /* new: prevent the card itself from growing beyond a reasonable width */
+  width: 100%;
+  max-width: 300px;
+}
+
     .product-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 8px 30px rgba(0,0,0,0.08);
@@ -86,6 +89,16 @@
     .product-card .wishlist:hover {
       background: #e63946;
       color: white;
+    }
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100vw;
+      min-height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 0.25;
     }
   </style>
 </head>
@@ -155,19 +168,19 @@
   }
 
   function addToCart(name) {
-    const product = products.find(p => p.name === name);
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const existing = cart.find(item => item.name === name);
+  const product = products.find(p => p.name === name);
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const existing = cart.find(item => item.name === name);
 
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      cart.push({ ...product, quantity: 1 });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    alert(`${name} added to cart!`);
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ ...product, quantity: 1 });
   }
+
+  localStorage.setItem('cart', JSON.stringify(cart));
+  alert(`${name} added to cart!`);
+}
 
   function displayProducts(items) {
     productList.innerHTML = "";
@@ -178,34 +191,31 @@
           <img src="${p.image}" alt="${p.name}" />
           <h3>${p.name}</h3>
           <p>$${p.price.toFixed(2)}</p>
-          <button class="add-to-cart-btn" data-name="${p.name}">Add to Cart</button>
+          <button onclick="addToCart('${p.name}')">Add to Cart</button>
           <button class="wishlist" onclick="toggleWishlist('${p.name}')">
             <i class="${isWishlisted ? 'fas' : 'far'} fa-heart ${isWishlisted ? 'wishlisted' : ''}"></i>
           </button>
         </div>
       `;
     });
-
-    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        const name = button.getAttribute('data-name');
-        addToCart(name);
-      });
-    });
   }
 
+  // Initial render
   displayProducts(products);
 
+  // Live search
   searchInput.addEventListener("input", () => {
     const val = searchInput.value.toLowerCase();
     filteredProducts = products.filter(p => p.name.toLowerCase().includes(val));
     displayProducts(filteredProducts);
   });
 
+  // Navbar menu toggle
   document.getElementById("menu-toggle").addEventListener("click", () => {
     document.getElementById("nav-links").classList.toggle("show");
   });
 
+  // Profile and login visibility
   const token = localStorage.getItem('token');
   const profileMenu = document.getElementById('profileMenu');
   const loginNav = document.getElementById('loginNav');
@@ -217,6 +227,7 @@
     loginNav.style.display = 'inline-block';
   }
 
+  // Dropdown toggle
   document.getElementById('profileToggle').addEventListener('click', (e) => {
     e.preventDefault();
     profileMenu.classList.toggle('active');
@@ -234,5 +245,10 @@
     window.location.href = 'index.html';
   });
 </script>
+
+<video autoplay muted id="bg-video">
+  <source src="shopbg.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
 </body>
 </html>
