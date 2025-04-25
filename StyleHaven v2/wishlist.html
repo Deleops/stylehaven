@@ -111,6 +111,18 @@
 </section>
 
 <script>
+  // conversion rates (same as cart)
+  const conversionRates = { USD: 1, EUR: 0.90, INR: 80 };
+
+  function formatPrice(price) {
+    const currency = localStorage.getItem('currency') || 'USD';
+    const rate = conversionRates[currency] || 1;
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency
+    }).format(price * rate);
+  }
+
   const wishlistContainer = document.getElementById("wishlistContainer");
 
   function renderWishlist() {
@@ -126,7 +138,7 @@
           <img src="${item.image}" alt="${item.name}" />
           <div class="item-details">
             <h3>${item.name}</h3>
-            <p>$${item.price.toFixed(2)}</p>
+            <p>${formatPrice(item.price)}</p>
             <button onclick="addToCart(${index})">Add to Cart</button>
             <button onclick="removeItem(${index})" class="remove-btn">Remove</button>
           </div>
@@ -136,26 +148,24 @@
   }
 
   function addToCart(index) {
-  const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-  const selectedItem = wishlist[index];
+    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const selectedItem = wishlist[index];
 
-  const existingItemIndex = cart.findIndex(item => item.name === selectedItem.name);
-  if (existingItemIndex !== -1) {
-    cart[existingItemIndex].quantity += 1;
-  } else {
-    cart.push({ ...selectedItem, quantity: 1 });
+    const existing = cart.find(item => item.name === selectedItem.name);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ ...selectedItem, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    wishlist.splice(index, 1);
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+    renderWishlist();
+    alert(`${selectedItem.name} moved to cart!`);
   }
-
-  // Save cart and remove from wishlist
-  localStorage.setItem("cart", JSON.stringify(cart));
-  wishlist.splice(index, 1);
-  localStorage.setItem("wishlist", JSON.stringify(wishlist));
-
-  renderWishlist(); // Re-render wishlist
-  alert(`${selectedItem.name} moved to cart!`);
-}
-
 
   function removeItem(index) {
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
@@ -164,13 +174,14 @@
     renderWishlist();
   }
 
-  document.getElementById("menu-toggle").addEventListener("click", () => {
-    document.getElementById("nav-links").classList.toggle("show");
-  });
+  // menu toggle + auth nav
+  document.getElementById("menu-toggle")
+    .addEventListener("click", () => document.getElementById("nav-links").classList.toggle("show"));
 
-  const token = localStorage.getItem('token');
-  const profileMenu = document.getElementById('profileMenu');
-  const loginNav = document.getElementById('loginNav');
+  const token = localStorage.getItem('token'),
+        profileMenu = document.getElementById('profileMenu'),
+        loginNav = document.getElementById('loginNav');
+
   if (token) {
     profileMenu.style.display = 'inline-block';
     loginNav.style.display = 'none';
@@ -184,15 +195,12 @@
     profileMenu.classList.toggle('active');
   });
   document.addEventListener('click', e => {
-    if (!profileMenu.contains(e.target)) {
-      profileMenu.classList.remove('active');
-    }
+    if (!profileMenu.contains(e.target)) profileMenu.classList.remove('active');
   });
-
   document.getElementById('logoutLink').addEventListener('click', e => {
     e.preventDefault();
     localStorage.removeItem('token');
-    window.location.href = 'index.html';
+    location.href = 'index.html';
   });
 
   renderWishlist();

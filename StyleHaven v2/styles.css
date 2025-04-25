@@ -243,28 +243,31 @@ img {
 }
 
 .product-card button {
+  margin: 0.25rem 0.5rem 0 0;
   padding: 0.5rem 1rem;
-  margin-right: 0.5rem;
   border: none;
-  background-color: #222;
+  border-radius: 1.5rem;
+  background: #e63946;
   color: white;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s;
+  transition: background 0.3s ease;
 }
 
 .product-card button:hover {
-  background-color: #444;
+  background: #d62839;
 }
 
-.product-card .wishlist {
-  background: none;
-  color: #ff5a5f;
+.product-card .wishlist-btn {
+  background: transparent;
+  border: 1px solid #e63946;
+  color: #e63946;
 }
 
-.product-card .wishlist:hover {
-  color: #e14b4f;
+.product-card .wishlist-btn:hover {
+  background: #e63946;
+  color: white;
 }
+
 
 
 /* Responsive Styles */
