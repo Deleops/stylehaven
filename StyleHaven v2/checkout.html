@@ -11,37 +11,8 @@
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #f9f9f9;
-      color: #333;
-    }
-    .profile-menu {
-      position: relative;
-      display: inline-block;
-    }
-    .profile-menu .dropdown {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      min-width: 160px;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .profile-menu.active .dropdown {
-      display: block;
-    }
-    .profile-menu .dropdown li {
-      list-style: none;
-      padding: 10px;
-    }
-    .profile-menu .dropdown li a {
-      text-decoration: none;
-      color: #333;
-      display: block;
-    }
-    .profile-menu .dropdown li a:hover {
-      background-color: #f1f1f1;
+      margin: 0;
+      padding: 0;
     }
     .checkout-container {
       max-width: 1200px;
@@ -131,12 +102,12 @@
           <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
           <ul class="dropdown" id="profileDropdown">
             <li><a href="profile.html">My Profile</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="orders.html">My Orders</a></li>
             <li><a href="settings.html">Settings</a></li>
             <li><a href="#" id="logoutLink">Logout</a></li>
           </ul>
         </li>
-        <li id="loginNav"><a href="login.html" class="underline-effect">Login</a></li>
+        <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
       </ul>
     </nav>
   </header>
@@ -178,8 +149,9 @@
   </main>
 
   <script>
+    const API = 'http://localhost:5000';
     const conversionRates = { USD: 1, EUR: 0.90, INR: 80 };
-
+    
     function formatPrice(price) {
       const currency = localStorage.getItem('currency') || 'USD';
       const rate = conversionRates[currency] || 1;
@@ -188,11 +160,12 @@
         currency
       }).format(price * rate);
     }
-
+    
+    // Load cart items
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     const orderItems = document.getElementById("orderItems");
     const orderTotal = document.getElementById("orderTotal");
-
+    
     let total = 0;
     cart.forEach(item => {
       const itemTotal = item.price * item.quantity;
@@ -205,15 +178,128 @@
       `;
       orderItems.appendChild(div);
     });
-
     orderTotal.textContent = formatPrice(total);
-
-    document.getElementById("billingForm").addEventListener("submit", function(e) {
+    
+    // Pre-fill billing info
+    async function prefillBillingDetails() {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+    
+      try {
+        const res = await fetch(`${API}/api/user/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const user = await res.json();
+        document.getElementById('fullname').value = user.name;
+        document.getElementById('email').value = user.email;
+    
+        // Pre-fill address if available
+        if (user.savedAddresses && user.savedAddresses.length > 0) {
+          const addr = user.savedAddresses[0];
+          document.getElementById('address').value = addr.addressLine;
+          document.getElementById('city').value = addr.city;
+          document.getElementById('zip').value = addr.zip;
+        }
+    
+        // Pre-fill card if available
+        if (user.savedCards && user.savedCards.length > 0) {
+          const card = user.savedCards[0];
+          document.getElementById('card').value = card.cardNumber;
+        }
+    
+      } catch (err) {
+        console.error('Failed to prefill billing info', err);
+      }
+    }
+    
+    // Submit order
+    document.getElementById("billingForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-      alert("Order placed successfully!");
-      localStorage.removeItem("cart");
-      window.location.href = "index.html";
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login first.');
+        return;
+      }
+    
+      const order = {
+  items: cart.map(item => ({
+    name: item.name,
+    price: item.price,
+    quantity: item.quantity,
+    image: item.image  // ⭐ ADD image field explicitly when placing the order
+  })),
+  totalPrice: total,
+  shippingAddress: {
+    fullName: document.getElementById('fullname').value,
+    email: document.getElementById('email').value,
+    addressLine: document.getElementById('address').value,
+    city: document.getElementById('city').value,
+    zip: document.getElementById('zip').value,
+  },
+  paymentCard: {
+    cardNumber: document.getElementById('card').value
+  }
+};
+
+
+    
+      try {
+        const res = await fetch(`${API}/api/user/orders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(order)
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert('Order placed successfully!');
+          localStorage.removeItem("cart");
+          window.location.href = 'orders.html';  // Redirect to My Orders page
+        } else {
+          alert(data.message || 'Failed to place order.');
+        }
+      } catch (err) {
+        console.error('Error placing order:', err);
+        alert('Server error while placing order.');
+      }
     });
-  </script>
+    
+    // Run
+    prefillBillingDetails();
+    </script>
+    
+  <!-- Navbar script -->
+<script>
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("nav-links").classList.toggle("show");
+  });
+  const token = localStorage.getItem('token');
+  const profileMenu = document.getElementById('profileMenu');
+  const loginNav = document.getElementById('loginNav');
+  if (token) {
+    profileMenu.style.display = 'inline-block';
+    loginNav.style.display = 'none';
+  } else {
+    profileMenu.style.display = 'none';
+    loginNav.style.display = 'inline-block';
+  }
+  document.getElementById('profileToggle').addEventListener('click', (e) => {
+    e.preventDefault();
+    profileMenu.classList.toggle('active');
+  });
+  document.addEventListener('click', (e) => {
+    if (!profileMenu.contains(e.target)) {
+      profileMenu.classList.remove('active');
+    }
+  });
+  document.getElementById('logoutLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = 'index.html';
+  });
+</script>
+
 </body>
 </html>

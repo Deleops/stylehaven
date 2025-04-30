@@ -2,112 +2,157 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StyleHaven | Profile</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="profile.css" /> <!-- New external CSS for Profile -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">StyleHaven</div>
-      <div class="menu-toggle" id="menu-toggle">
-        <i class="fas fa-bars"></i>
-      </div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="index.html" class="underline-effect">Home</a></li>
-        <li><a href="shop.html" class="underline-effect">Shop</a></li>
-        <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
-        <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
-        <li class="profile-menu">
-          <a href="javascript:void(0);" id="profile-btn" class="underline-effect"><i class="fas fa-user"></i></a>
-          <ul class="dropdown" id="profile-dropdown">
-            <li><a href="profile.html">Profile</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="settings.html">Settings</a></li>
-            <li><a href="#" id="logout-btn">Logout</a></li>
-          </ul>
-        </li>
-        <li id="loginNav"><a href="login.html" class="underline-effect">Login</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <section class="profile-section">
-    <h1>My Profile</h1>
-    <div class="profile-container">
-      <div class="profile-picture">
-        <img src="images/profile-placeholder.png" alt="Profile Picture">
-        <button class="btn">Change Photo</button>
-      </div>
-      <div class="profile-info">
-        <form class="profile-form">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" value="john_doe" disabled>
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" value="john@example.com">
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone</label>
-            <input type="text" id="phone" value="+1234567890">
-          </div>
-          <div class="form-group">
-            <label for="address">Shipping Address</label>
-            <input type="text" id="address" value="123 Main Street, NY">
-          </div>
-          <button type="submit" class="btn">Update Profile</button>
-        </form>
-      </div>
+<!-- NAVBAR (your reusable code) -->
+<header>
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
+    </a>
+    <div class="menu-toggle" id="menu-toggle">
+      <i class="fas fa-bars"></i>
     </div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
+      <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+      <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+      <li class="profile-menu" id="profileMenu">
+        <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+        <ul class="dropdown" id="profileDropdown">
+          <li><a href="profile.html">My Profile</a></li>
+          <li><a href="orders.html">My Orders</a></li>
+          <li><a href="settings.html">Settings</a></li>
+          <li><a href="#" id="logoutLink">Logout</a></li>
+        </ul>
+      </li>
+      <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="profile-section">
+  <h1>Your Profile</h1>
+
+  <!-- Profile Info -->
+  <section class="profile-info">
+    <h2>Account Details</h2>
+    <form id="profileForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">New Password (Leave empty if not changing)</label>
+        <input type="password" id="password" />
+      </div>
+      <div class="form-group">
+        <label for="currentPassword">Current Password</label>
+        <input type="password" id="currentPassword" required />
+      </div>
+      <button type="submit" class="btn">Save Profile</button>
+    </form>
+  </section>
+  
+
+  <!-- Saved Addresses -->
+  <section class="profile-address">
+    <h2>Saved Addresses</h2>
+    <ul id="addressList"></ul>
+    <button id="addAddressBtn" class="btn">Add Address</button>
+    <form id="addressForm" class="settings-form hidden">
+      <div class="form-group">
+        <label for="addressLine">Address Line</label>
+        <input type="text" id="addressLine" required />
+      </div>
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" required />
+      </div>
+      <div class="form-group">
+        <label for="zip">ZIP Code</label>
+        <input type="text" id="zip" required />
+      </div>
+      <div class="button-group">
+        <button type="submit" class="btn">Save Address</button>
+        <button type="button" id="cancelAddressBtn" class="btn remove-btn">Cancel</button>
+      </div>
+    </form>
   </section>
 
-  <script>
-    // Mobile nav toggle
-    document.getElementById("menu-toggle").addEventListener("click", () => {
-      document.getElementById("nav-links").classList.toggle("show");
-    });
+  <!-- Saved Cards -->
+  <section class="profile-cards">
+    <h2>Saved Cards</h2>
+    <ul id="cardList"></ul>
+    <button id="addCardBtn" class="btn">Add Card</button>
+    <form id="cardForm" class="settings-form hidden">
+      <div class="form-group">
+        <label for="cardNumber">Card Number</label>
+        <input type="text" id="cardNumber" maxlength="16" required />
+      </div>
+      <div class="form-group">
+        <label for="expiry">Expiry (MM/YY)</label>
+        <input type="text" id="expiry" placeholder="MM/YY" required />
+      </div>
+      <div class="form-group">
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" maxlength="3" required />
+      </div>
+      <div class="button-group">
+        <button type="submit" class="btn">Save Card</button>
+        <button type="button" id="cancelCardBtn" class="btn remove-btn">Cancel</button>
+      </div>
+    </form>
+  </section>
+</main>
+<div id="spinner" class="spinner hidden">
+  <i class="fas fa-spinner fa-spin"></i> Loading...
+</div>
 
-    // Profile dropdown toggle
-    const profileMenu = document.querySelector(".profile-menu");
-    const profileBtn = document.getElementById("profile-btn");
-    const profileDropdown = document.getElementById("profile-dropdown");
-    profileBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      profileDropdown.classList.toggle("active");
-    });
-    document.addEventListener("click", (e) => {
-      if (!profileMenu.contains(e.target)) {
-        profileDropdown.classList.remove("active");
-      }
-    });
-
-    // Show/hide nav based on token
-    const token = localStorage.getItem("token");
-    const loginNav = document.getElementById("loginNav");
-    if (token) {
-      profileMenu.style.display = "inline-block";
-      loginNav.style.display = "none";
-    } else {
-      profileMenu.style.display = "none";
-      loginNav.style.display = "inline-block";
+<!-- Navbar script -->
+<script>
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("nav-links").classList.toggle("show");
+  });
+  const token = localStorage.getItem('token');
+  const profileMenu = document.getElementById('profileMenu');
+  const loginNav = document.getElementById('loginNav');
+  if (token) {
+    profileMenu.style.display = 'inline-block';
+    loginNav.style.display = 'none';
+  } else {
+    profileMenu.style.display = 'none';
+    loginNav.style.display = 'inline-block';
+  }
+  document.getElementById('profileToggle').addEventListener('click', (e) => {
+    e.preventDefault();
+    profileMenu.classList.toggle('active');
+  });
+  document.addEventListener('click', (e) => {
+    if (!profileMenu.contains(e.target)) {
+      profileMenu.classList.remove('active');
     }
+  });
+  document.getElementById('logoutLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = 'index.html';
+  });
+</script>
 
-    // Logout
-    document.getElementById("logout-btn").addEventListener("click", (e) => {
-      e.preventDefault();
-      localStorage.removeItem("token");
-      window.location.href = "index.html";
-    });
+<!-- Profile page scripts will go separately (next) -->
+<script src="profile.js"></script>
 
-    // Update profile
-    document.querySelector(".profile-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      alert("Profile updated successfully!");
-    });
-  </script>
 </body>
 </html>

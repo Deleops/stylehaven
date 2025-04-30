@@ -104,6 +104,33 @@ img {
 /* Profile Menu */
 .profile-menu {
   position: relative;
+  display: inline-block;
+}
+.profile-menu .dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  min-width: 160px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.profile-menu.active .dropdown {
+  display: block;
+}
+.profile-menu .dropdown li {
+  list-style: none;
+  padding: 10px;
+}
+.profile-menu .dropdown li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+.profile-menu .dropdown li a:hover {
+  background-color: #f1f1f1;
 }
 
 .profile-btn {
@@ -390,6 +417,7 @@ img {
 .footer-social h4 {
   color: #ff5a5f;
   margin-bottom: 1rem;
+  margin-left: 5.5rem;
 }
 
 .social-icons {
@@ -538,34 +566,4 @@ img {
   object-fit: cover;
 }
 
-.profile-menu {
-  position: relative;
-  display: inline-block;
-}
-.profile-menu .dropdown {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  min-width: 160px;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.profile-menu.active .dropdown {
-  display: block;
-}
-.profile-menu .dropdown li {
-  list-style: none;
-  padding: 10px;
-}
-.profile-menu .dropdown li a {
-  text-decoration: none;
-  color: #333;
-  display: block;
-}
-.profile-menu .dropdown li a:hover {
-  background-color: #f1f1f1;
-}
 

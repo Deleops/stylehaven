@@ -13,36 +13,6 @@
       background-color: #f9f9f9;
       color: #333;
     }
-    .profile-menu {
-      position: relative;
-      display: inline-block;
-    }
-    .profile-menu .dropdown {
-      display: none;
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      min-width: 160px;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .profile-menu.active .dropdown {
-      display: block;
-    }
-    .profile-menu .dropdown li {
-      list-style: none;
-      padding: 10px;
-    }
-    .profile-menu .dropdown li a {
-      text-decoration: none;
-      color: #333;
-      display: block;
-    }
-    .profile-menu .dropdown li a:hover {
-      background-color: #f1f1f1;
-    }
     .carousel-wrapper {
       overflow: hidden;
       width: 100%;
@@ -98,31 +68,30 @@
   </style>
 </head>
 <body>
-<header>
-  <nav class="navbar">
-    <a href="index.html" class="logo">
-      <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
-    </a>
-    <div class="menu-toggle" id="menu-toggle">
-      <i class="fas fa-bars"></i>
-    </div>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
-      <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
-      <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
-      <li class="profile-menu" id="profileMenu">
-        <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
-        <ul class="dropdown" id="profileDropdown">
-          <li><a href="profile.html">My Profile</a></li>
-          <li><a href="dashboard.html">Dashboard</a></li>
-          <li><a href="settings.html">Settings</a></li>
-          <li><a href="#" id="logoutLink">Logout</a></li>
-        </ul>
-      </li>
-      <li id="loginNav"><a href="login.html" class="underline-effect">Login</a></li>
-    </ul>
-  </nav>
-</header>
+<!-- NAVBAR -->
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
+      </a>
+      <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
+        <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+        <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+        <li class="profile-menu" id="profileMenu">
+          <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+          <ul class="dropdown" id="profileDropdown">
+            <li><a href="profile.html">My Profile</a></li>
+            <li><a href="orders.html">My Orders</a></li> 
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="#" id="logoutLink">Logout</a></li>
+          </ul>
+        </li>
+        <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
+      </ul>
+    </nav>
+  </header>
 
 <main>
   <!-- Hero Section -->
