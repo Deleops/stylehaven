@@ -1,180 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StyleHaven | Modern Fashion</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StyleHaven | Home</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    .carousel-wrapper {
+      overflow: hidden;
+      width: 100%;
+      position: relative;
+      padding: 2rem 0;
+    }
+    .carousel {
+      display: flex;
+      gap: 2rem;
+      width: max-content;
+      margin: 0 auto;
+      
+    }
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(-1 * (250px + 2rem) * 5)); }
+    }
+    .product-card {
+      width: 250px;
+      flex-shrink: 0;
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .product-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+    .product-card button {
+      margin: 0.5rem 0.25rem 0 0;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 1.5rem;
+      background: #e63946;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .product-card button:hover {
+      background: #d62839;
+    }
+    .product-card .wishlist-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #e63946;
+    }
+  </style>
 </head>
 <body>
-  <!-- Header -->
+<!-- NAVBAR -->
   <header>
-    <div class="container">
-      <nav class="navbar">
-        <a href="#" class="logo">Style<span>Haven</span></a>
-        
-        <div class="menu-toggle" id="menuToggle">
-          <i class="fas fa-bars"></i>
-        </div>
-        
-        <ul class="nav-links" id="navLinks">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="shop.html">Shop</a></li>
-          <li><a href="#">Collections</a></li>
-          <li><a href="#">New Arrivals</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-        
-        <div class="nav-icons">
-          <a href="#"><i class="fas fa-search"></i></a>
-          <a href="#"><i class="fas fa-user"></i></a>
-          <a href="#"><i class="fas fa-heart"></i></a>
-          <a href="#"><i class="fas fa-shopping-cart"></i></a>
-        </div>
-      </nav>
-    </div>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
+      </a>
+      <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
+        <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+        <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+        <li class="profile-menu" id="profileMenu">
+          <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+          <ul class="dropdown" id="profileDropdown">
+            <li><a href="profile.html">My Profile</a></li>
+            <li><a href="orders.html">My Orders</a></li> 
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="#" id="logoutLink">Logout</a></li>
+          </ul>
+        </li>
+        <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
+      </ul>
+    </nav>
   </header>
 
+<main>
   <!-- Hero Section -->
   <section class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <div class="hero-text">
-          <span class="discount-tag">Up to 50% Off</span>
-          <h1>Discover Your Style With Our Latest Collection</h1>
-          <p>Explore our handpicked selection of premium fashion items designed to make you stand out. From casual wear to elegant dresses, we have everything you need to express yourself.</p>
-          <a href="shop.html" class="btn">Shop Now <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="hero-image">
-          <img src="home.jpg" alt="Fashion Model">
-          <div class="featured-tag">Featured</div>
-        </div>
-      </div>
+    <div class="hero-content">
+      <h1>Elevate Your Style</h1>
+      <p>Discover the latest trends in fashion with StyleHaven</p>
+      <a href="shop.html" class="btn">Shop Now</a>
+    </div>
+    <video autoplay muted loop class="hero-video">
+      <source src="hero.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </section>
+
+  <!-- Featured Bundles Carousel -->
+  <section class="featured-products">
+    <h2>Featured Bundles</h2>
+    <div class="carousel" id="carousel">
+      <!-- Cards will be injected here -->
     </div>
   </section>
-  <!-- Shop Section -->
-<section class="shop-preview">
-  <div class="container">
-    <div class="section-title">
-      <h2>Featured Products</h2>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-column">
+      <h4><i class="fas fa-link"></i> Quick Links</h4>
+      <ul>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="wishlist.html">Wishlist</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
     </div>
-    <div class="product-grid">
-      <div class="product-card">
-        <img src="/api/placeholder/300/400" alt="Product 1">
-        <h4>Elegant Dress</h4>
-        <p>$49.99</p>
-      </div>
-      <div class="product-card">
-        <img src="/api/placeholder/300/400" alt="Product 2">
-        <h4>Casual Blazer</h4>
-        <p>$59.99</p>
-      </div>
-      <div class="product-card">
-        <img src="/api/placeholder/300/400" alt="Product 3">
-        <h4>Denim Jacket</h4>
-        <p>$69.99</p>
-      </div>
-      <div class="product-card">
-        <img src="/api/placeholder/300/400" alt="Product 4">
-        <h4>Summer Sandals</h4>
-        <p>$39.99</p>
-      </div>
+    <div class="footer-column">
+      <h4><i class="fas fa-info-circle"></i> About StyleHaven</h4>
+      <p>StyleHaven offers the latest fashion trends, high-quality apparel, and accessories for every occasion. Shop with us for stylish, affordable, and comfortable pieces to elevate your wardrobe.</p>
     </div>
-    <div style="text-align: center; margin-top: 30px;">
-      <a href="shop.html" class="btn">View All Products</a>
+    <div class="footer-column footer-social">
+      <h4><i class="fas fa-share-alt"></i> Follow Us</h4>
+      <div class="social-icons">
+        <a href="https://www.facebook.com/profile.php?id=100010898173580" target="_blank"class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/elonmusk" target="_blank"class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/maverickvickss/" target="_blank"class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.youtube.com/"target="_blank" class="social-icon"><i class="fab fa-youtube"></i></a>
+      </div>
     </div>
   </div>
-</section>
+  <div class="footer-trademark">
+    <p>&copy; 2025 <strong>Style<span style="color: red;">Haven</span></strong>. All rights reserved.</p>
+  </div>
+</footer>
 
-  <!-- Categories Section -->
-  <section class="categories">
-    <div class="container">
-      <div class="section-title">
-        <h2>Shop By Category</h2>
-      </div>
-      <div class="category-grid">
-        <div class="category-card">
-          <img src="women.jpg" alt="Women's Fashion">
-          <div class="category-content">
-            <h3>Women's Fashion</h3>
-            <a href="#">Explore More <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-        <div class="category-card">
-          <img src="men.jpg" alt="Men's Fashion">
-          <div class="category-content">
-            <h3>Men's Fashion</h3>
-            <a href="#">Explore More <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-        <div class="category-card">
-          <img src="accessories.jpg" alt="Accessories">
-          <div class="category-content">
-            <h3>Accessories</h3>
-            <a href="#">Explore More <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-        <div class="category-card">
-          <img src="footwear.jpg" alt="Footwear">
-          <div class="category-content">
-            <h3>Footwear</h3>
-            <a href="#">Explore More <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<script>
+  // --- Carousel Data & Currency Logic ---
+  const conversionRates = { USD:1, EUR:0.90, INR:80 };
+  const bundles = [
+    { name:"Bundle 1", price:100, image:"bundle1.jpg" },
+    { name:"Bundle 2", price:90, image:"bundle2.jpg" },
+    { name:"Bundle 3", price:110, image:"bundle3.jpg" },
+    { name:"Bundle 4", price:95, image:"bundle4.jpg" },
+    { name:"Bundle 5", price:80, image:"bundle5.jpg" }
+  ];
+  function formatPrice(price) {
+    const cur = localStorage.getItem('currency')||'USD';
+    const rate = conversionRates[cur]||1;
+    return new Intl.NumberFormat('en-US',{ style:'currency', currency:cur })
+           .format(price*rate);
+  }
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-column">
-          <h3>StyleHaven</h3>
-          <p>Your destination for premium fashion items at affordable prices. Discover your style with us.</p>
-          <div class="social-links">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-pinterest"></i></a>
-          </div>
-        </div>
-        <div class="footer-column">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Shop</a></li>
-            <li><a href="#">Collections</a></li>
-            <li><a href="#">New Arrivals</a></li>
-            <li><a href="#">Sale</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h3>Customer Service</h3>
-          <ul>
-            <li><a href="#">My Account</a></li>
-            <li><a href="#">Track Order</a></li>
-            <li><a href="#">Returns & Exchanges</a></li>
-            <li><a href="#">Shipping Policy</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h3>Contact Us</h3>
-          <ul>
-            <li><i class="fas fa-map-marker-alt"></i> 123 Fashion Street, City</li>
-            <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
-            <li><i class="fas fa-envelope"></i> info@stylehaven.com</li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 StyleHaven. All Rights Reserved.</p>
-      </div>
-    </div>
-  </footer>
+  // --- Render Carousel ---
+  const carousel = document.getElementById('carousel');
+  bundles.forEach(b => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <a href="shop.html"><img src="${b.image}" alt="${b.name}"></a>
+      <h3>${b.name}</h3>
+      <p class="price">${formatPrice(b.price)}</p>
+      <button onclick="addToCart('${b.name}')">Add to Cart</button>
+      <button class="wishlist-btn" onclick="toggleWishlist('${b.name}')">
+        <i id="wish-${b.name}" class="far fa-heart"></i>
+      </button>
+    `;
+    carousel.append(card);
+  });
 
-  <script src="script.js"></script>
+
+  // --- Cart & Wishlist Handlers ---
+  function addToCart(name) {
+    let cart = JSON.parse(localStorage.getItem('cart'))||[];
+    const p = bundles.find(b=>b.name===name);
+    const idx = cart.findIndex(x=>x.name===name);
+    if(idx>-1) cart[idx].quantity++;
+    else cart.push({...p,quantity:1});
+    localStorage.setItem('cart',JSON.stringify(cart));
+    alert(`${name} added to cart!`);
+  }
+  function toggleWishlist(name) {
+    let wl = JSON.parse(localStorage.getItem('wishlist'))||[];
+    const p = bundles.find(b=>b.name===name);
+    const idx = wl.findIndex(x=>x.name===name);
+    const icon = document.getElementById(`wish-${name}`);
+    if(idx>-1) {
+      wl.splice(idx,1);
+      icon.classList.replace('fas','far');
+    } else {
+      wl.push(p);
+      icon.classList.replace('far','fas');
+    }
+    localStorage.setItem('wishlist',JSON.stringify(wl));
+  }
+  // initialize wishlist icons
+  document.addEventListener('DOMContentLoaded',()=>{
+    const wl = JSON.parse(localStorage.getItem('wishlist'))||[];
+    wl.forEach(item=>{
+      const icon = document.getElementById(`wish-${item.name}`);
+      if(icon) icon.classList.replace('far','fas');
+    });
+  });
+
+  // --- Navbar & Profile Menu ---
+  document.getElementById('menu-toggle')
+    .addEventListener('click',()=> document.getElementById('nav-links').classList.toggle('show'));
+  const token=localStorage.getItem('token'),
+        pm= document.getElementById('profileMenu'),
+        ln= document.getElementById('loginNav');
+  if(token){ pm.style.display='inline-block'; ln.style.display='none'; }
+  else    { pm.style.display='none'; ln.style.display='inline-block'; }
+  document.getElementById('profileToggle').addEventListener('click',e=>{
+    e.preventDefault(); pm.classList.toggle('active');
+  });
+  document.addEventListener('click',e=>{
+    if(!pm.contains(e.target)) pm.classList.remove('active');
+  });
+  document.getElementById('logoutLink').addEventListener('click',e=>{
+    e.preventDefault(); localStorage.removeItem('token'); location.href='index.html';
+  });
+</script>
 </body>
 </html>
