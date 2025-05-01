@@ -1,5 +1,5 @@
 // Helper function for authenticated requests
-const API = 'http://localhost:5000';
+const API = 'https://stylehaven-backend.onrender.com';
 const fetchJSON = (path, opts = {}) => {
   opts.headers = {
     'Content-Type': 'application/json',
