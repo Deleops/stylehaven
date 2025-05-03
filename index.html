@@ -145,7 +145,6 @@
     <p>&copy; 2025 <strong>Style<span style="color: red;">Haven</span></strong>. All rights reserved.</p>
   </div>
 </footer>
-
 <script>
   // --- Carousel Data & Currency Logic ---
   const conversionRates = { USD:1, EUR:0.90, INR:80 };
@@ -231,6 +230,35 @@
   document.getElementById('logoutLink').addEventListener('click',e=>{
     e.preventDefault(); localStorage.removeItem('token'); location.href='index.html';
   });
+
+  // mobile
+  document.addEventListener("DOMContentLoaded", () => {
+    const profileMenu = document.querySelector(".profile-menu");
+    const profileBtn = document.querySelector(".profile-btn");
+
+    const toggleDropdown = (e) => {
+      e.stopPropagation();
+      profileMenu.classList.toggle("active");
+    };
+
+    profileBtn.addEventListener("click", toggleDropdown);
+    profileBtn.addEventListener("touchend", toggleDropdown);
+
+    document.addEventListener("click", (e) => {
+      if (!profileMenu.contains(e.target)) {
+        profileMenu.classList.remove("active");
+      }
+    });
+
+    document.addEventListener("touchend", (e) => {
+      if (!profileMenu.contains(e.target)) {
+        profileMenu.classList.remove("active");
+      }
+    });
+  });
+
 </script>
+
+
 </body>
 </html>
