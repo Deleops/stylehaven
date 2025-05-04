@@ -79,38 +79,26 @@
 <!-- NAVBAR -->
 <header>
   <nav class="navbar">
-    <!-- Logo -->
-    <a href="/" class="logo">
-      <span class="style-red">Style</span><span class="haven-black">Haven</span>
+    <a href="index.html" class="logo">
+      <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
     </a>
-  
-    <!-- Toggle Button for Mobile -->
-    <button class="menu-toggle" aria-label="Toggle navigation">
-      ☰
-    </button>
-  
-    <!-- Nav Links -->
-    <ul class="nav-links">
-      <li><a href="/index.html" class="underline-effect">Home</a></li>
-      <li><a href="/shop.html" class="underline-effect">Shop</a></li>
-      <li><a href="/wishlist.html" class="underline-effect">Wishlist</a></li>
-      <li><a href="/cart.html" class="underline-effect">Cart</a></li>
+    <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
+      <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+      <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+      <li class="profile-menu" id="profileMenu">
+        <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+        <ul class="dropdown" id="profileDropdown">
+          <li><a href="profile.html">My Profile</a></li>
+          <li><a href="orders.html">My Orders</a></li>
+          <li><a href="settings.html">Settings</a></li>
+          <li><a href="#" id="logoutLink">Logout</a></li>
+        </ul>
+      </li>
+      <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
     </ul>
-  
-    <!-- Profile Menu -->
-    <div class="profile-menu">
-      <button class="profile-btn" id="profileToggle" aria-label="User profile menu">
-        👤
-      </button>
-      <ul class="dropdown">
-        <li><a href="/profile.html">My Profile</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/logout">Logout</a></li>
-      </ul>
-    </div>
   </nav>
-  
 </header>
 
 <main>
@@ -260,28 +248,5 @@
       .addEventListener('click', () => document.getElementById('nav-links').classList.toggle('show'));
   });
 </script>
-<script>
-  // Toggle mobile nav menu
-  const toggleBtn = document.querySelector('.menu-toggle');
-  const navLinks = document.querySelector('.nav-links');
-  toggleBtn.addEventListener('click', () => {
-    navLinks.classList.toggle('open');
-  });
-
-  // Toggle profile dropdown
-  const profileBtn = document.querySelector('#profileToggle');
-  const profileMenu = document.querySelector('.profile-menu');
-  profileBtn.addEventListener('click', () => {
-    profileMenu.classList.toggle('active');
-  });
-
-  // Optional: Close dropdown if clicked outside
-  document.addEventListener('click', function (e) {
-    if (!profileMenu.contains(e.target) && !profileBtn.contains(e.target)) {
-      profileMenu.classList.remove('active');
-    }
-  });
-</script>
-
 </body>
 </html>

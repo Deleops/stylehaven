@@ -27,10 +27,9 @@ img {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 100;
 }
 
-/* Logo */
 .logo {
   font-size: 1.8rem;
   font-weight: 600;
@@ -48,13 +47,12 @@ img {
   color: #222;
 }
 
-/* Nav Links */
+
 .nav-links {
   list-style: none;
   display: flex;
   gap: 1.5rem;
   align-items: center;
-  transition: max-height 0.3s ease;
 }
 
 .nav-links li a {
@@ -62,39 +60,34 @@ img {
   color: #222;
   font-weight: 500;
   position: relative;
-  padding: 0.5rem;
 }
 
-.nav-links li a.underline-effect::after {
+.underline-effect::after {
   content: '';
   position: absolute;
   width: 0;
   height: 2px;
-  bottom: 0;
+  bottom: -4px;
   left: 0;
   background-color: #ff5a5f;
-  transition: 0.3s ease-in-out;
+  transition: 0.3s;
 }
 
-.nav-links li a.underline-effect:hover::after {
+.underline-effect:hover::after {
   width: 100%;
 }
 
-/* Toggle Icon */
 .menu-toggle {
   display: none;
-  font-size: 1.8rem;
-  color: #222;
+  font-size: 1.5rem;
   cursor: pointer;
-  background: none;
-  border: none;
 }
 
 /* Profile Menu */
 .profile-menu {
   position: relative;
   display: inline-block;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .profile-btn {
@@ -103,7 +96,7 @@ img {
   color: #222;
   background: none;
   border: none;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
 }
 
 .profile-btn:hover {
@@ -121,7 +114,6 @@ img {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border-radius: 0.5rem;
   padding: 0.5rem 0;
-  z-index: 1001;
   transition: all 0.3s ease;
 }
 
@@ -146,47 +138,25 @@ img {
   color: #ff5a5f;
 }
 
-/* Responsive Navbar */
-@media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
-  }
-
-  .nav-links {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #fff;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    width: 100%;
-    max-height: 0;
-    overflow: hidden;
-    border-top: 1px solid #eee;
-  }
-
-  .nav-links.open {
-    max-height: 500px; /* enough to show all items */
-    transition: max-height 0.3s ease-in-out;
-  }
-
-  .nav-links li {
-    width: 100%;
-  }
-
-  .nav-links li a {
-    display: block;
-    width: 100%;
-    padding: 1rem 2rem;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
+/* Mobile-Friendly Adjustments */
   .profile-menu {
-    margin-left: auto;
+    position: relative;
+    display: inline-block;
+    z-index: 1000;
   }
-}
-
+  
+  .profile-menu .dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    min-width: 160px;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1001;
+  }
   
 
 /* Hero Section */
