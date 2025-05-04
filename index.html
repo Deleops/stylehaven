@@ -258,7 +258,22 @@
   });
 
 </script>
+<script>
+  const profileToggle = document.getElementById('profileToggle');
+  const profileMenu = document.getElementById('profileMenu');
 
+  profileToggle.addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    profileMenu.classList.toggle('active');
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!profileMenu.contains(e.target)) {
+      profileMenu.classList.remove('active');
+    }
+  });
+</script>
 
 </body>
 </html>
