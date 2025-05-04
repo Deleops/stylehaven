@@ -24,7 +24,7 @@
       gap: 2rem;
       width: max-content;
       margin: 0 auto;
-      animation: scroll 30s linear infinite;
+      
     }
     @keyframes scroll {
       from { transform: translateX(0); }
@@ -65,41 +65,33 @@
       font-size: 1.2rem;
       color: #e63946;
     }
-
-    @media screen and (max-width: 768px) {
-      .carousel {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        animation: none;
-      }
-    }
   </style>
 </head>
 <body>
 <!-- NAVBAR -->
-<header>
-  <nav class="navbar">
-    <a href="index.html" class="logo">
-      <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
-    </a>
-    <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
-      <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
-      <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
-      <li class="profile-menu" id="profileMenu">
-        <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
-        <ul class="dropdown" id="profileDropdown">
-          <li><a href="profile.html">My Profile</a></li>
-          <li><a href="orders.html">My Orders</a></li>
-          <li><a href="settings.html">Settings</a></li>
-          <li><a href="#" id="logoutLink">Logout</a></li>
-        </ul>
-      </li>
-      <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
-    </ul>
-  </nav>
-</header>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
+      </a>
+      <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
+        <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+        <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+        <li class="profile-menu" id="profileMenu">
+          <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+          <ul class="dropdown" id="profileDropdown">
+            <li><a href="profile.html">My Profile</a></li>
+            <li><a href="orders.html">My Orders</a></li> 
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="#" id="logoutLink">Logout</a></li>
+          </ul>
+        </li>
+        <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
+      </ul>
+    </nav>
+  </header>
 
 <main>
   <!-- Hero Section -->
@@ -118,8 +110,8 @@
   <!-- Featured Bundles Carousel -->
   <section class="featured-products">
     <h2>Featured Bundles</h2>
-    <div class="carousel-wrapper">
-      <div class="carousel" id="carousel"></div>
+    <div class="carousel" id="carousel">
+      <!-- Cards will be injected here -->
     </div>
   </section>
 </main>
@@ -142,10 +134,10 @@
     <div class="footer-column footer-social">
       <h4><i class="fas fa-share-alt"></i> Follow Us</h4>
       <div class="social-icons">
-        <a href="https://www.facebook.com/profile.php?id=100010898173580" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://x.com/elonmusk" target="_blank" class="social-icon"><i class="fab fa-twitter"></i></a>
-        <a href="https://www.instagram.com/maverickvickss/" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
-        <a href="https://www.youtube.com/" target="_blank" class="social-icon"><i class="fab fa-youtube"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=100010898173580" target="_blank"class="social-icon"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/elonmusk" target="_blank"class="social-icon"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/maverickvickss/" target="_blank"class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.youtube.com/"target="_blank" class="social-icon"><i class="fab fa-youtube"></i></a>
       </div>
     </div>
   </div>
@@ -153,8 +145,8 @@
     <p>&copy; 2025 <strong>Style<span style="color: red;">Haven</span></strong>. All rights reserved.</p>
   </div>
 </footer>
-
 <script>
+  // --- Carousel Data & Currency Logic ---
   const conversionRates = { USD:1, EUR:0.90, INR:80 };
   const bundles = [
     { name:"Bundle 1", price:100, image:"bundle1.jpg" },
@@ -163,13 +155,14 @@
     { name:"Bundle 4", price:95, image:"bundle4.jpg" },
     { name:"Bundle 5", price:80, image:"bundle5.jpg" }
   ];
-
   function formatPrice(price) {
-    const cur = localStorage.getItem('currency') || 'USD';
-    const rate = conversionRates[cur] || 1;
-    return new Intl.NumberFormat('en-US', { style:'currency', currency:cur }).format(price * rate);
+    const cur = localStorage.getItem('currency')||'USD';
+    const rate = conversionRates[cur]||1;
+    return new Intl.NumberFormat('en-US',{ style:'currency', currency:cur })
+           .format(price*rate);
   }
 
+  // --- Render Carousel ---
   const carousel = document.getElementById('carousel');
   bundles.forEach(b => {
     const card = document.createElement('div');
@@ -186,66 +179,82 @@
     carousel.append(card);
   });
 
+
+  // --- Cart & Wishlist Handlers ---
   function addToCart(name) {
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const p = bundles.find(b => b.name === name);
-    const idx = cart.findIndex(x => x.name === name);
-    if (idx > -1) cart[idx].quantity++;
-    else cart.push({ ...p, quantity: 1 });
-    localStorage.setItem('cart', JSON.stringify(cart));
+    let cart = JSON.parse(localStorage.getItem('cart'))||[];
+    const p = bundles.find(b=>b.name===name);
+    const idx = cart.findIndex(x=>x.name===name);
+    if(idx>-1) cart[idx].quantity++;
+    else cart.push({...p,quantity:1});
+    localStorage.setItem('cart',JSON.stringify(cart));
     alert(`${name} added to cart!`);
   }
-
   function toggleWishlist(name) {
-    let wl = JSON.parse(localStorage.getItem('wishlist')) || [];
-    const p = bundles.find(b => b.name === name);
-    const idx = wl.findIndex(x => x.name === name);
+    let wl = JSON.parse(localStorage.getItem('wishlist'))||[];
+    const p = bundles.find(b=>b.name===name);
+    const idx = wl.findIndex(x=>x.name===name);
     const icon = document.getElementById(`wish-${name}`);
-    if (idx > -1) {
-      wl.splice(idx, 1);
-      icon.classList.replace('fas', 'far');
+    if(idx>-1) {
+      wl.splice(idx,1);
+      icon.classList.replace('fas','far');
     } else {
       wl.push(p);
-      icon.classList.replace('far', 'fas');
+      icon.classList.replace('far','fas');
     }
-    localStorage.setItem('wishlist', JSON.stringify(wl));
+    localStorage.setItem('wishlist',JSON.stringify(wl));
   }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const wl = JSON.parse(localStorage.getItem('wishlist')) || [];
-    wl.forEach(item => {
+  // initialize wishlist icons
+  document.addEventListener('DOMContentLoaded',()=>{
+    const wl = JSON.parse(localStorage.getItem('wishlist'))||[];
+    wl.forEach(item=>{
       const icon = document.getElementById(`wish-${item.name}`);
-      if (icon) icon.classList.replace('far', 'fas');
+      if(icon) icon.classList.replace('far','fas');
+    });
+  });
+
+  // --- Navbar & Profile Menu ---
+  document.getElementById('menu-toggle')
+    .addEventListener('click',()=> document.getElementById('nav-links').classList.toggle('show'));
+  const token=localStorage.getItem('token'),
+        pm= document.getElementById('profileMenu'),
+        ln= document.getElementById('loginNav');
+  if(token){ pm.style.display='inline-block'; ln.style.display='none'; }
+  else    { pm.style.display='none'; ln.style.display='inline-block'; }
+  document.getElementById('profileToggle').addEventListener('click',e=>{
+    e.preventDefault(); pm.classList.toggle('active');
+  });
+  document.addEventListener('click',e=>{
+    if(!pm.contains(e.target)) pm.classList.remove('active');
+  });
+  document.getElementById('logoutLink').addEventListener('click',e=>{
+    e.preventDefault(); localStorage.removeItem('token'); location.href='index.html';
+  });
+
+  // mobile
+  document.addEventListener("DOMContentLoaded", () => {
+    const profileMenu = document.querySelector(".profile-menu");
+    const profileBtn = document.querySelector(".profile-btn");
+
+    const toggleDropdown = (e) => {
+      e.stopPropagation();
+      profileMenu.classList.toggle("active");
+    };
+
+    profileBtn.addEventListener("click", toggleDropdown);
+    profileBtn.addEventListener("touchend", toggleDropdown);
+
+    document.addEventListener("click", (e) => {
+      if (!profileMenu.contains(e.target)) {
+        profileMenu.classList.remove("active");
+      }
     });
 
-    const token = localStorage.getItem('token'),
-          pm = document.getElementById('profileMenu'),
-          ln = document.getElementById('loginNav');
-    if (token) {
-      pm.style.display = 'inline-block';
-      ln.style.display = 'none';
-    } else {
-      pm.style.display = 'none';
-      ln.style.display = 'inline-block';
-    }
-
-    document.getElementById('profileToggle').addEventListener('click', e => {
-      e.preventDefault();
-      pm.classList.toggle('active');
+    document.addEventListener("touchend", (e) => {
+      if (!profileMenu.contains(e.target)) {
+        profileMenu.classList.remove("active");
+      }
     });
-
-    document.addEventListener('click', e => {
-      if (!pm.contains(e.target)) pm.classList.remove('active');
-    });
-
-    document.getElementById('logoutLink').addEventListener('click', e => {
-      e.preventDefault();
-      localStorage.removeItem('token');
-      location.href = 'index.html';
-    });
-
-    document.getElementById('menu-toggle')
-      .addEventListener('click', () => document.getElementById('nav-links').classList.toggle('show'));
   });
 </script>
 </body>
