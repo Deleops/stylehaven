@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StyleHaven | Settings</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .settings-container {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background-color: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .settings-container h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    select {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
+      </a>
+      <div class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
+        <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+        <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+        <li class="profile-menu" id="profileMenu">
+          <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+          <ul class="dropdown" id="profileDropdown">
+            <li><a href="profile.html">My Profile</a></li>
+            <li><a href="orders.html">My Orders</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="#" id="logoutLink">Logout</a></li>
+          </ul>
+        </li>
+        <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- SETTINGS SECTION -->
+  <section class="settings-container">
+    <h2>Currency Preference</h2>
+    <label for="currencySelector">Choose your currency:</label>
+    <select id="currencySelector">
+      <option value="USD">$ USD</option>
+      <option value="EUR">€ EUR</option>
+      <option value="INR">₹ INR</option>
+    </select>
+  </section>
+
+  <script>
+    // Menu toggle
+    document.getElementById("menu-toggle").addEventListener("click", () => {
+      document.getElementById("nav-links").classList.toggle("show");
+    });
+
+    // Auth display
+    const token = localStorage.getItem('token');
+    const profileMenu = document.getElementById('profileMenu');
+    const loginNav = document.getElementById('loginNav');
+    if (token) {
+      profileMenu.style.display = 'inline-block';
+      loginNav.style.display = 'none';
+    } else {
+      profileMenu.style.display = 'none';
+      loginNav.style.display = 'inline-block';
+    }
+
+    // Profile dropdown
+    document.getElementById('profileToggle').addEventListener('click', (e) => {
+      e.preventDefault();
+      profileMenu.classList.toggle('active');
+    });
+    document.addEventListener('click', (e) => {
+      if (!profileMenu.contains(e.target)) {
+        profileMenu.classList.remove('active');
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    });
+
+    // Load saved currency
+    const selector = document.getElementById('currencySelector');
+    const saved = localStorage.getItem('currency') || 'USD';
+    selector.value = saved;
+
+    // Save currency on change
+    selector.addEventListener('change', () => {
+      localStorage.setItem('currency', selector.value);
+      alert(`Currency set to ${selector.value}`);
+    });
+  </script>
+</body>
+</html>

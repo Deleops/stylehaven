@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StyleHaven | Checkout</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .checkout-container {
+      max-width: 1200px;
+      margin: 3rem auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #e63946;
+    }
+    .checkout-form label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    .checkout-form input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+    }
+    .order-summary {
+      background-color: #fefefe;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .order-total {
+      border-top: 1px solid #ddd;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #e63946;
+    }
+    .checkout-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #e63946;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 1rem;
+    }
+    .checkout-btn:hover {
+      background-color: #d62839;
+    }
+    @media (max-width: 768px) {
+      .checkout-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
+      </a>
+      <div class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
+        <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+        <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+        <li class="profile-menu" id="profileMenu">
+          <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+          <ul class="dropdown" id="profileDropdown">
+            <li><a href="profile.html">My Profile</a></li>
+            <li><a href="orders.html">My Orders</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="#" id="logoutLink">Logout</a></li>
+          </ul>
+        </li>
+        <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
+      </ul>
+    </nav>
+  </header>
+  
+
+  <main class="checkout-container">
+    <!-- Left: Billing Form -->
+    <div class="checkout-form">
+      <h2>Billing Details</h2>
+      <form id="billingForm">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+
+        <label for="address">Address</label>
+        <input type="text" id="address" required>
+
+        <label for="city">City</label>
+        <input type="text" id="city" required>
+
+        <label for="zip">ZIP Code</label>
+        <input type="text" id="zip" required>
+
+        <label for="card">Card Number</label>
+        <input type="text" id="card" maxlength="16" placeholder="•••• •••• •••• ••••" required>
+
+        <button type="submit" class="checkout-btn">Place Order</button>
+      </form>
+    </div>
+
+    <!-- Right: Order Summary -->
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      <div id="orderItems"></div>
+      <div class="order-total">Total: <span id="orderTotal">0.00</span></div>
+    </div>
+  </main>
+
+  <script>
+    const API = 'https://stylehaven-backend.onrender.com';
+    const conversionRates = { USD: 1, EUR: 0.90, INR: 80 };
+    
+    function formatPrice(price) {
+      const currency = localStorage.getItem('currency') || 'USD';
+      const rate = conversionRates[currency] || 1;
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency
+      }).format(price * rate);
+    }
+    
+    // Load cart items
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const orderItems = document.getElementById("orderItems");
+    const orderTotal = document.getElementById("orderTotal");
+    
+    let total = 0;
+    cart.forEach(item => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+      const div = document.createElement("div");
+      div.classList.add("order-item");
+      div.innerHTML = `
+        <span>${item.name} x${item.quantity}</span>
+        <span>${formatPrice(itemTotal)}</span>
+      `;
+      orderItems.appendChild(div);
+    });
+    orderTotal.textContent = formatPrice(total);
+    
+    // Pre-fill billing info
+    async function prefillBillingDetails() {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+    
+      try {
+        const res = await fetch(`${API}/api/user/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const user = await res.json();
+        document.getElementById('fullname').value = user.name;
+        document.getElementById('email').value = user.email;
+    
+        // Pre-fill address if available
+        if (user.savedAddresses && user.savedAddresses.length > 0) {
+          const addr = user.savedAddresses[0];
+          document.getElementById('address').value = addr.addressLine;
+          document.getElementById('city').value = addr.city;
+          document.getElementById('zip').value = addr.zip;
+        }
+    
+        // Pre-fill card if available
+        if (user.savedCards && user.savedCards.length > 0) {
+          const card = user.savedCards[0];
+          document.getElementById('card').value = card.cardNumber;
+        }
+    
+      } catch (err) {
+        console.error('Failed to prefill billing info', err);
+      }
+    }
+    
+    // Submit order
+    document.getElementById("billingForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login first.');
+        return;
+      }
+    
+      const order = {
+  items: cart.map(item => ({
+    name: item.name,
+    price: item.price,
+    quantity: item.quantity,
+    image: item.image  // ⭐ ADD image field explicitly when placing the order
+  })),
+  totalPrice: total,
+  shippingAddress: {
+    fullName: document.getElementById('fullname').value,
+    email: document.getElementById('email').value,
+    addressLine: document.getElementById('address').value,
+    city: document.getElementById('city').value,
+    zip: document.getElementById('zip').value,
+  },
+  paymentCard: {
+    cardNumber: document.getElementById('card').value
+  }
+};
+
+
+    
+      try {
+        const res = await fetch(`${API}/api/user/orders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(order)
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert('Order placed successfully!');
+          localStorage.removeItem("cart");
+          window.location.href = 'orders.html';  // Redirect to My Orders page
+        } else {
+          alert(data.message || 'Failed to place order.');
+        }
+      } catch (err) {
+        console.error('Error placing order:', err);
+        alert('Server error while placing order.');
+      }
+    });
+    
+    // Run
+    prefillBillingDetails();
+    </script>
+    
+  <!-- Navbar script -->
+<script>
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("nav-links").classList.toggle("show");
+  });
+  const token = localStorage.getItem('token');
+  const profileMenu = document.getElementById('profileMenu');
+  const loginNav = document.getElementById('loginNav');
+  if (token) {
+    profileMenu.style.display = 'inline-block';
+    loginNav.style.display = 'none';
+  } else {
+    profileMenu.style.display = 'none';
+    loginNav.style.display = 'inline-block';
+  }
+  document.getElementById('profileToggle').addEventListener('click', (e) => {
+    e.preventDefault();
+    profileMenu.classList.toggle('active');
+  });
+  document.addEventListener('click', (e) => {
+    if (!profileMenu.contains(e.target)) {
+      profileMenu.classList.remove('active');
+    }
+  });
+  document.getElementById('logoutLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = 'index.html';
+  });
+</script>
+
+</body>
+</html>

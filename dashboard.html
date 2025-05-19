@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StyleHaven | Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- Navbar -->
+<header>
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
+    </a>
+    <div class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="shop.html"><i class="fas fa-store"></i></a></li>
+      <li><a href="wishlist.html"><i class="fas fa-heart"></i></a></li>
+      <li><a href="cart.html"><i class="fas fa-shopping-cart"></i></a></li>
+      <li class="profile-menu" id="profileMenu">
+        <a href="#" id="profileToggle"><i class="fas fa-user"></i></a>
+        <ul class="dropdown" id="profileDropdown">
+          <li><a href="profile.html">My Profile</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="settings.html">Settings</a></li>
+          <li><a href="#" id="logoutLink">Logout</a></li>
+        </ul>
+      </li>
+      <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="dashboard-section">
+  <h1>Admin Dashboard</h1>
+
+  <section class="dashboard-cards">
+    <div class="dashboard-card" id="usersCard">
+      <h2>Total Users</h2>
+      <p id="totalUsers">Loading...</p>
+    </div>
+    <div class="dashboard-card" id="ordersCard">
+      <h2>Total Orders</h2>
+      <p id="totalOrders">Loading...</p>
+    </div>
+  </section>
+
+  <section class="dashboard-tables">
+    <div class="dashboard-table">
+      <h2>Recent Users</h2>
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+        </thead>
+        <tbody id="usersTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="dashboard-table">
+      <h2>Recent Orders</h2>
+      <table>
+        <thead>
+          <tr><th>Order ID</th><th>User</th><th>Total</th><th>Status</th></tr>
+        </thead>
+        <tbody id="ordersTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<!-- Navbar script -->
+<script>
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("nav-links").classList.toggle("show");
+  });
+  const token = localStorage.getItem('token');
+  const profileMenu = document.getElementById('profileMenu');
+  const loginNav = document.getElementById('loginNav');
+  if (token) {
+    profileMenu.style.display = 'inline-block';
+    loginNav.style.display = 'none';
+  } else {
+    profileMenu.style.display = 'none';
+    loginNav.style.display = 'inline-block';
+  }
+  document.getElementById('profileToggle').addEventListener('click', (e) => {
+    e.preventDefault();
+    profileMenu.classList.toggle('active');
+  });
+  document.addEventListener('click', (e) => {
+    if (!profileMenu.contains(e.target)) {
+      profileMenu.classList.remove('active');
+    }
+  });
+  document.getElementById('logoutLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = 'index.html';
+  });
+</script>
+<script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StyleHaven | My Orders</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .orders-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .orders-container h1 {
+      text-align: center;
+      color: #e63946;
+      margin-bottom: 2rem;
+    }
+    .order-card {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .order-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .order-item {
+      background: #fefefe;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      width: calc(50% - 1rem);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .order-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+    .order-total {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #e63946;
+    }
+    .cancel-btn {
+      margin-top: 1rem;
+      padding: 0.6rem 1rem;
+      background: #e63946;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .cancel-btn:hover {
+      background: #d62839;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #4CAF50;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      animation: fadeInOut 2s forwards;
+      z-index: 999;
+    }
+    .toast.error {
+      background: #e63946;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    @media (max-width: 768px) {
+      .order-item {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo">
+        <span class="style-red">STYLE</span><span class="haven-black">HAVEN</span>
+      </a>
+      <div class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="shop.html" class="underline-effect"><i class="fas fa-store"></i></a></li>
+        <li><a href="wishlist.html" class="underline-effect"><i class="fas fa-heart"></i></a></li>
+        <li><a href="cart.html" class="underline-effect"><i class="fas fa-shopping-cart"></i></a></li>
+        <li class="profile-menu" id="profileMenu">
+          <a href="#" id="profileToggle" class="underline-effect"><i class="fas fa-user"></i></a>
+          <ul class="dropdown" id="profileDropdown">
+            <li><a href="profile.html">My Profile</a></li>
+            <li><a href="orders.html">My Orders</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="#" id="logoutLink">Logout</a></li>
+          </ul>
+        </li>
+        <li id="loginNav"><a href="login.html" class="underline-effect"><i class="fas fa-sign-in-alt"></i></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="orders-container">
+    <h1>My Orders</h1>
+    <div id="ordersList"></div>
+  </main>
+<!-- Navbar script -->
+<script>
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("nav-links").classList.toggle("show");
+  });
+  const token = localStorage.getItem('token');
+  const profileMenu = document.getElementById('profileMenu');
+  const loginNav = document.getElementById('loginNav');
+  if (token) {
+    profileMenu.style.display = 'inline-block';
+    loginNav.style.display = 'none';
+  } else {
+    profileMenu.style.display = 'none';
+    loginNav.style.display = 'inline-block';
+  }
+  document.getElementById('profileToggle').addEventListener('click', (e) => {
+    e.preventDefault();
+    profileMenu.classList.toggle('active');
+  });
+  document.addEventListener('click', (e) => {
+    if (!profileMenu.contains(e.target)) {
+      profileMenu.classList.remove('active');
+    }
+  });
+  document.getElementById('logoutLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href = 'index.html';
+  });
+</script>
+  <script>
+    const API = 'https://stylehaven-backend.onrender.com';
+
+    function showToast(message, success = true) {
+      const toast = document.createElement('div');
+      toast.className = `toast ${success ? '' : 'error'}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => document.body.removeChild(toast), 2000);
+    }
+
+    // Convert and format prices according to selected currency
+    const conversionRates = { USD: 1, EUR: 0.90, INR: 80 };
+
+    function formatPrice(price) {
+      const currency = localStorage.getItem('currency') || 'USD';
+      const rate = conversionRates[currency] || 1;
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency
+      }).format(price * rate);
+    }
+
+    // Load orders and display them
+    async function loadOrders() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        document.getElementById('ordersList').innerHTML = '<p>Please log in to view your orders.</p>';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API}/api/user/orders`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const orders = await res.json();
+        const container = document.getElementById('ordersList');
+        container.innerHTML = '';
+
+        if (orders.length === 0) {
+          container.innerHTML = '<p>No orders found.</p>';
+          return;
+        }
+
+        orders.forEach(order => {
+          const div = document.createElement('div');
+          div.classList.add('order-card');
+          div.innerHTML = `
+            <div class="order-header">
+              <span>Order #${order._id}</span>
+              <span>${new Date(order.createdAt).toLocaleDateString()}</span>
+            </div>
+            <div class="order-items">
+              ${order.items.map(item => `
+                <div class="order-item">
+                  <img src="${item.image}" alt="${item.name}" onerror="this.src='default-product.png'">
+                  <div>
+                    <div>${item.name}</div>
+                    <div>Quantity: ${item.quantity}</div>
+                    <div>Price: ${formatPrice(item.price)}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="order-total">Total: ${formatPrice(order.totalPrice)}</div>
+            <button class="cancel-btn" onclick="cancelOrder('${order._id}')">Cancel Order</button>
+          `;
+          container.appendChild(div);
+        });
+
+      } catch (err) {
+        console.error('Error loading orders:', err);
+        document.getElementById('ordersList').innerHTML = '<p>Error loading orders.</p>';
+      }
+    }
+
+    // Cancel the order
+    async function cancelOrder(orderId) {
+      const token = localStorage.getItem('token');
+      if (!confirm('Are you sure you want to cancel this order?')) return;
+
+      try {
+        const res = await fetch(`${API}/api/user/orders/${orderId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          showToast('Order cancelled successfully');
+          loadOrders();
+        } else {
+          const data = await res.json();
+          showToast(data.message || 'Failed to cancel order', false);
+        }
+      } catch (err) {
+        console.error('Error cancelling order:', err);
+        showToast('Server error while cancelling order', false);
+      }
+    }
+
+    // Initialize orders page
+    loadOrders();
+  </script>
+
+</body>
+</html>
