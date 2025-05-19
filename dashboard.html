@@ -28,7 +28,7 @@
           <li><a href="profile.html">My Profile</a></li>
           <li><a href="orders.html">My Orders</a></li>
           <li><a href="settings.html">Settings</a></li>
-          <li id="dashboardLink" style="display: none;"><a href="dashboard.html">Dashboard</a></li>
+          <li id="adminDashboardLink" style="display: none;"><a href="dashboard.html">Dashboard</a></li>
           <li><a href="#" id="logoutLink">Logout</a></li>
         </ul>
       </li>
@@ -37,7 +37,6 @@
   </nav>
 </header>
 
-<!-- Admin Dashboard -->
 <main class="dashboard-section">
   <h1>Admin Dashboard</h1>
 
@@ -75,36 +74,41 @@
   </section>
 </main>
 
-<!-- Navbar script -->
+<!-- Navbar & Auth Logic -->
 <script>
   const token = localStorage.getItem('token');
   const profileMenu = document.getElementById('profileMenu');
   const loginNav = document.getElementById('loginNav');
-  const dashboardLink = document.getElementById('dashboardLink');
-
-  document.getElementById("menu-toggle").addEventListener("click", () => {
-    document.getElementById("nav-links").classList.toggle("show");
-  });
+  const adminDashboardLink = document.getElementById('adminDashboardLink');
 
   if (token) {
     profileMenu.style.display = 'inline-block';
     loginNav.style.display = 'none';
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.isAdmin) {
-        dashboardLink.style.display = 'block';
+        adminDashboardLink.style.display = 'block';
       } else {
-        alert('Access denied: Admins only');
-        location.href = 'index.html';
+        // If not admin, redirect from dashboard
+        if (window.location.pathname.includes('dashboard.html')) {
+          window.location.href = 'index.html';
+        }
       }
-    } catch {
-      alert('Invalid session. Please log in again.');
-      localStorage.removeItem('token');
-      location.href = 'adminlogin.html';
+    } catch (err) {
+      console.error('Invalid token format');
     }
   } else {
-    location.href = 'adminlogin.html';
+    profileMenu.style.display = 'none';
+    loginNav.style.display = 'inline-block';
+    if (window.location.pathname.includes('dashboard.html')) {
+      window.location.href = 'index.html';
+    }
   }
+
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("nav-links").classList.toggle("show");
+  });
 
   document.getElementById('profileToggle').addEventListener('click', (e) => {
     e.preventDefault();
