@@ -28,7 +28,7 @@
           <li><a href="profile.html">My Profile</a></li>
           <li><a href="orders.html">My Orders</a></li>
           <li><a href="settings.html">Settings</a></li>
-          <li><a href="dashboard.html">Dashboard</a></li>
+          <li id="dashboardLink" style="display: none;"><a href="dashboard.html">Dashboard</a></li>
           <li><a href="#" id="logoutLink">Logout</a></li>
         </ul>
       </li>
@@ -37,6 +37,7 @@
   </nav>
 </header>
 
+<!-- Admin Dashboard -->
 <main class="dashboard-section">
   <h1>Admin Dashboard</h1>
 
@@ -73,36 +74,56 @@
     </div>
   </section>
 </main>
+
 <!-- Navbar script -->
 <script>
-  document.getElementById("menu-toggle").addEventListener("click", () => {
-    document.getElementById("nav-links").classList.toggle("show");
-  });
   const token = localStorage.getItem('token');
   const profileMenu = document.getElementById('profileMenu');
   const loginNav = document.getElementById('loginNav');
+  const dashboardLink = document.getElementById('dashboardLink');
+
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("nav-links").classList.toggle("show");
+  });
+
   if (token) {
     profileMenu.style.display = 'inline-block';
     loginNav.style.display = 'none';
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.isAdmin) {
+        dashboardLink.style.display = 'block';
+      } else {
+        alert('Access denied: Admins only');
+        location.href = 'index.html';
+      }
+    } catch {
+      alert('Invalid session. Please log in again.');
+      localStorage.removeItem('token');
+      location.href = 'adminlogin.html';
+    }
   } else {
-    profileMenu.style.display = 'none';
-    loginNav.style.display = 'inline-block';
+    location.href = 'adminlogin.html';
   }
+
   document.getElementById('profileToggle').addEventListener('click', (e) => {
     e.preventDefault();
     profileMenu.classList.toggle('active');
   });
+
   document.addEventListener('click', (e) => {
     if (!profileMenu.contains(e.target)) {
       profileMenu.classList.remove('active');
     }
   });
+
   document.getElementById('logoutLink').addEventListener('click', (e) => {
     e.preventDefault();
     localStorage.removeItem('token');
     window.location.href = 'index.html';
   });
 </script>
+
 <script src="dashboard.js"></script>
 </body>
 </html>

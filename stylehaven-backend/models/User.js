@@ -38,6 +38,10 @@ const orderSchema = new mongoose.Schema({
   paymentCard: {
     cardNumber: { type: String, required: true }
   },
+  status: {
+  type: String,
+  default: 'Placed'
+},
   createdAt: {
     type: Date,
     default: Date.now
