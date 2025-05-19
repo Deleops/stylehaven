@@ -125,6 +125,7 @@
             <li><a href="profile.html">My Profile</a></li>
             <li><a href="orders.html">My Orders</a></li>
             <li><a href="settings.html">Settings</a></li>
+            <li id="adminDashboardLink" style="display: none;"><a href="dashboard.html">Dashboard</a></li>
             <li><a href="#" id="logoutLink">Logout</a></li>
           </ul>
         </li>
@@ -152,6 +153,15 @@
     profileMenu.style.display = 'none';
     loginNav.style.display = 'inline-block';
   }
+  // 🌟 Show Dashboard only if admin
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload?.isAdmin) {
+        document.getElementById('adminDashboardLink').style.display = 'block';
+      }
+    } catch (err) {
+      console.warn("Invalid token payload", err);
+    }
   document.getElementById('profileToggle').addEventListener('click', (e) => {
     e.preventDefault();
     profileMenu.classList.toggle('active');
