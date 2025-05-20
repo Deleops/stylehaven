@@ -1,6 +1,6 @@
 const User = require('../models/User');
 
-// 📋 1. Get all users (latest 10)
+// 1. Get all users (latest 10)
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
@@ -14,7 +14,7 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// 👥 2. Get total user count
+// 2. Get total user count
 exports.getUserCount = async (req, res) => {
   try {
     const count = await User.countDocuments();
@@ -24,7 +24,7 @@ exports.getUserCount = async (req, res) => {
   }
 };
 
-// 🛒 3. Get total order count (efficient aggregation)
+// 3. Get total order count (efficient aggregation)
 exports.getOrderCount = async (req, res) => {
   try {
     const result = await User.aggregate([
@@ -37,7 +37,7 @@ exports.getOrderCount = async (req, res) => {
   }
 };
 
-// 📦 4. Get recent orders (latest 10 from all users)
+// 4. Get recent orders (latest 10 from all users)
 exports.getRecentOrders = async (req, res) => {
   try {
     const users = await User.find({}, 'name orders').lean();
@@ -65,7 +65,7 @@ exports.getRecentOrders = async (req, res) => {
   }
 };
 
-// 💰 5. Get total revenue
+// 5. Get total revenue
 exports.getTotalRevenue = async (req, res) => {
   try {
     const users = await User.find({}, 'orders').lean();

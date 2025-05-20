@@ -97,7 +97,7 @@
       profileMenu.style.display = 'none';
       loginNav.style.display = 'inline-block';
     }
-    // 🌟 Show Dashboard only if admin
+    // Show Dashboard only if admin
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload?.isAdmin) {

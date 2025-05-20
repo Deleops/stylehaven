@@ -210,7 +210,7 @@
     if(token){ pm.style.display='inline-block'; ln.style.display='none'; }
     else    { pm.style.display='none'; ln.style.display='inline-block'; }
 
-    // 🌟 Show Dashboard only if admin
+    //  Show Dashboard only if admin
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload?.isAdmin) {
@@ -228,30 +228,6 @@
     });
     document.getElementById('logoutLink').addEventListener('click',e=>{
       e.preventDefault(); localStorage.removeItem('token'); location.href='index.html';
-    });
-
-    // Mobile dropdown compatibility
-    document.addEventListener("DOMContentLoaded", () => {
-      const profileMenu = document.querySelector(".profile-menu");
-      const profileBtn = document.querySelector(".profile-btn");
-      const toggleDropdown = (e) => {
-        e.stopPropagation();
-        profileMenu.classList.toggle("active");
-      };
-      if (profileBtn) {
-        profileBtn.addEventListener("click", toggleDropdown);
-        profileBtn.addEventListener("touchend", toggleDropdown);
-      }
-      document.addEventListener("click", (e) => {
-        if (!profileMenu.contains(e.target)) {
-          profileMenu.classList.remove("active");
-        }
-      });
-      document.addEventListener("touchend", (e) => {
-        if (!profileMenu.contains(e.target)) {
-          profileMenu.classList.remove("active");
-        }
-      });
     });
     
   </script>
