@@ -1,29 +1,23 @@
-const API_BASE = 'https://stylehaven-backend.onrender.com';
-const API = {
-  USERS_COUNT: `${API_BASE}/users/count`,
-  USERS_RECENT: `${API_BASE}/users`,
-  ORDERS_COUNT: `${API_BASE}/orders/count`,
-  ORDERS_RECENT: `${API_BASE}/orders/recent`
-};
-
+const API = 'https://stylehaven-backend.onrender.com';
+const token = localStorage.getItem('token');
 const headers = { Authorization: `Bearer ${token}` };
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (!token) return alert('Not authorized. Please log in.');
 
   try {
-    // 📊 Total Users
-    const usersRes = await fetch(API.USERS_COUNT, { headers });
+    // Total Users
+    const usersRes = await fetch(`${API}/api/admin/users/count`, { headers });
     const { total: totalUsers } = await usersRes.json();
     document.getElementById('totalUsers').textContent = totalUsers;
 
-    // 📦 Total Orders
-    const ordersRes = await fetch(API.ORDERS_COUNT, { headers });
+    // Total Orders
+    const ordersRes = await fetch(`${API}/api/admin/orders/count`, { headers });
     const { total: totalOrders } = await ordersRes.json();
     document.getElementById('totalOrders').textContent = totalOrders;
 
-    // 👤 Recent Users
-    const recentUsersRes = await fetch(API.USERS_RECENT, { headers });
+    // Recent Users
+    const recentUsersRes = await fetch(`${API}/api/admin/users`, { headers });
     const users = await recentUsersRes.json();
     const usersTable = document.getElementById('usersTableBody');
     usersTable.innerHTML = '';
@@ -37,8 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       `;
     });
 
-    // 🧾 Recent Orders
-    const recentOrdersRes = await fetch(API.ORDERS_RECENT, { headers });
+    // Recent Orders
+    const recentOrdersRes = await fetch(`${API}/api/admin/orders/recent`, { headers });
     const orders = await recentOrdersRes.json();
     const ordersTable = document.getElementById('ordersTableBody');
     ordersTable.innerHTML = '';
