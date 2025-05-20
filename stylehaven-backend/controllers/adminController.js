@@ -1,12 +1,13 @@
 const User = require('../models/User');
 
-// 📋 1. Get all users (latest 10, no password)
+// 📋 1. Get all users (latest 10)
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
-      .select('name email isAdmin createdAt')
+      .select('name email isAdmin')
       .sort({ createdAt: -1 })
-      .limit(10);
+      .limit(10)
+      .lean();
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -23,12 +24,14 @@ exports.getUserCount = async (req, res) => {
   }
 };
 
-// 🛒 3. Get total order count
+// 🛒 3. Get total order count (efficient aggregation)
 exports.getOrderCount = async (req, res) => {
   try {
-    const users = await User.find({}, 'orders');
-    const totalOrders = users.reduce((sum, user) => sum + user.orders.length, 0);
-    res.json({ total: totalOrders });
+    const result = await User.aggregate([
+      { $project: { orderCount: { $size: "$orders" } } },
+      { $group: { _id: null, total: { $sum: "$orderCount" } } }
+    ]);
+    res.json({ total: result[0]?.total || 0 });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -37,16 +40,16 @@ exports.getOrderCount = async (req, res) => {
 // 📦 4. Get recent orders (latest 10 from all users)
 exports.getRecentOrders = async (req, res) => {
   try {
-    const users = await User.find({}, 'name orders');
+    const users = await User.find({}, 'name orders').lean();
     const orders = [];
 
     users.forEach(user => {
-      user.orders.forEach(order => {
+      user.orders?.forEach(order => {
         orders.push({
           id: order._id,
-          user: user.name,
-          total: order.totalPrice,
-          createdAt: order.createdAt,
+          user: user.name || 'Unknown',
+          total: order.totalPrice || 0,
+          createdAt: order.createdAt || new Date(),
           status: order.status || 'Placed'
         });
       });
