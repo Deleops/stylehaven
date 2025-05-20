@@ -6,12 +6,14 @@ const {
   getAllUsers,
   getUserCount,
   getOrderCount,
-  getRecentOrders
+  getRecentOrders,
+  getTotalRevenue // ⬅️ Add this
 } = require('../controllers/adminController');
 
 router.get('/users', auth, isAdmin, getAllUsers);
 router.get('/users/count', auth, isAdmin, getUserCount);
 router.get('/orders/count', auth, isAdmin, getOrderCount);
 router.get('/orders/recent', auth, isAdmin, getRecentOrders);
+router.get('/revenue', auth, isAdmin, getTotalRevenue); // ⬅️ New route
 
 module.exports = router;

@@ -64,3 +64,21 @@ exports.getRecentOrders = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// 💰 5. Get total revenue
+exports.getTotalRevenue = async (req, res) => {
+  try {
+    const users = await User.find({}, 'orders').lean();
+    let totalRevenue = 0;
+
+    users.forEach(user => {
+      user.orders?.forEach(order => {
+        totalRevenue += order.totalPrice || 0;
+      });
+    });
+
+    res.json({ total: totalRevenue });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to calculate revenue' });
+  }
+};
