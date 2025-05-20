@@ -1,9 +1,9 @@
 const API_BASE = 'https://stylehaven-backend.onrender.com';
 const API = {
-  USERS_COUNT: `${API_BASE}/admin/users/count`,
-  USERS_RECENT: `${API_BASE}/admin/users`,
-  ORDERS_COUNT: `${API_BASE}/admin/orders/count`,
-  ORDERS_RECENT: `${API_BASE}/admin/orders/recent`
+  USERS_COUNT: `${API_BASE}/users/count`,
+  USERS_RECENT: `${API_BASE}/users`,
+  ORDERS_COUNT: `${API_BASE}/orders/count`,
+  ORDERS_RECENT: `${API_BASE}/orders/recent`
 };
 
 const headers = { Authorization: `Bearer ${token}` };
