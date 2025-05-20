@@ -1,5 +1,4 @@
 const API = 'https://stylehaven-backend.onrender.com';
-const token = localStorage.getItem('token');
 const headers = { Authorization: `Bearer ${token}` };
 
 document.addEventListener('DOMContentLoaded', async () => {
