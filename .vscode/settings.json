@@ -1,0 +1,8 @@
+{
+    "mdb.presetConnections": [
+        {
+            "name": "Stylehaven Connection",
+            "connectionString": "mongodb+srv://vaibhavinzil:vaibhav1023@stylehaven.af2cyb9.mongodb.net/"
+        }
+    ]
+}
