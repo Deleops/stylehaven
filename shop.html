@@ -21,13 +21,59 @@
       font-size: 2.5rem;
       margin-bottom: 1rem;
     }
+    .search-container {
+  position: relative;
+  width: 60%;
+  max-width: 500px;
+  margin: 0 auto;
+}
     #searchInput {
       padding: 0.75rem 1.25rem;
-      width: 60%;
+      width: 100%;
       max-width: 500px;
       border: 1px solid #ccc;
       border-radius: 2rem;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .clear-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #999;
+  cursor: pointer;
+  display: none;
+  padding: 0;
+  line-height: 1;
+}
+
+.clear-btn.visible {
+  display: block;
+}
+      .category-filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem auto 2rem;
+      max-width: 800px;
+    }
+    .category-button {
+      padding: 0.5rem 1.25rem;
+      border: none;
+      border-radius: 20px;
+      background-color: #eee;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .category-button.active,
+    .category-button:hover {
+      background-color: #e63946;
+      color: #fff;
     }
     .product-list {
       display: grid;
@@ -95,6 +141,24 @@
       z-index: -1;
       opacity: 0.25;
     }
+    /* New styling for category buttons */
+    .category-buttons {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .category-buttons button {
+      padding: 0.5rem 1rem;
+      margin: 0.3rem;
+      border: none;
+      border-radius: 1.25rem;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .category-buttons button:hover {
+      background: #e63946;
+    }
   </style>
 </head>
 <body>
@@ -126,8 +190,13 @@
 <section class="shop-section">
   <div class="shop-header">
     <h1>Shop Our Collection</h1>
-    <input type="text" id="searchInput" placeholder="Search products...">
+    <div class="search-container">
+  <input type="text" id="searchInput" placeholder="Search products...">
+  <button id="clearSearchBtn" class="clear-btn" aria-label="Clear search">&times;</button>
+</div>
+
   </div>
+  <div class="category-filters" id="categoryFilters"></div>
   <div class="product-list" id="productList"></div>
 </section>
 <main>
@@ -162,20 +231,44 @@
   </footer>
   
 </main>
+
 <script>
   const products = [
-    { name: "Classic White Tee", price: 25, image: "cwt.jpg" },
-    { name: "Blue Denim Jacket", price: 70, image: "bdj.jpg" },
-    { name: "Sporty Sneakers", price: 45, image: "ss.jpg" },
-    { name: "Boho Summer Dress", price: 55, image: "bsd.jpg" },
-    { name: "Leather Jacket", price: 65, image: "lj.jpg" },
-    { name: "Denim Jeans", price: 75, image: "dj.jpg" },
-    { name: "Bundle 1", price: 100, image: "bundle1.jpg" },
-    { name: "Bundle 2", price: 90, image: "bundle2.jpg" },
-    { name: "Bundle 3", price: 110, image: "bundle3.jpg" },
-    { name: "Bundle 4", price: 95, image: "bundle4.jpg" },
-    { name: "Bundle 5", price: 80, image: "bundle5.jpg" }
-  ];
+  { name: "Classic White Tee", price: 25, image: "Products/cwt.jpg", category: "Tops", tags: ["white", "t-shirt", "cotton", "basic"] },
+  { name: "Blue Denim Jacket", price: 70, image: "Products/bdj.jpg", category: "Jackets", tags: ["denim", "blue", "casual", "outerwear"] },
+  { name: "Sporty Sneakers", price: 45, image: "Products/ss.jpg", category: "Footwear", tags: ["sneakers", "sport", "shoes", "running"] },
+  { name: "Boho Summer Dress", price: 55, image: "Products/bsd.jpg", category: "Dresses", tags: ["boho", "summer", "casual", "flowy"] },
+  { name: "Leather Jacket", price: 65, image: "Products/lj.jpg", category: "Jackets", tags: ["leather", "black", "biker", "outerwear"] },
+  { name: "Denim Jeans", price: 75, image: "Products/dj.jpg", category: "Bottoms", tags: ["denim", "blue", "jeans", "pants"] },
+  { name: "Puffer Winter Coat", price: 120, image: "Products/puffer.jpg", category: "Jackets", tags: ["puffer", "winter", "coat", "warm"] },
+  { name: "Faux Fur Trim Parka", price: 95, image: "Products/parka.jpg", category: "Jackets", tags: ["faux fur", "parka", "winter", "hooded"] },
+  { name: "Striped Crop Top", price: 30, image: "Products/stripedcrop.jpg", category: "Tops", tags: ["striped", "crop", "top", "summer"] },
+  { name: "Graphic Oversized Tee", price: 28, image: "Products/oversizedtee.jpg", category: "Tops", tags: ["graphic", "tee", "oversized", "casual"] },
+  { name: "Chunky Platform Boots", price: 85, image: "Products/platformboots.jpg", category: "Footwear", tags: ["platform", "boots", "chunky", "shoes"] },
+  { name: "Canvas Slip-Ons", price: 35, image: "Products/slipons.jpg", category: "Footwear", tags: ["canvas", "slip-on", "shoes", "casual"] },
+  { name: "Floral Maxi Dress", price: 65, image: "Products/floralmaxi.jpg", category: "Dresses", tags: ["floral", "maxi", "dress", "summer"] },
+  { name: "Satin Bodycon Dress", price: 70, image: "Products/satinbodycon.jpg", category: "Dresses", tags: ["satin", "bodycon", "party", "elegant"] },
+  { name: "Cargo Utility Pants", price: 50, image: "Products/cargo.jpg", category: "Bottoms", tags: ["cargo", "utility", "pants", "pockets"] },
+  { name: "High-Waisted Skirt", price: 45, image: "Products/hwskirt.jpg", category: "Bottoms", tags: ["high-waisted", "skirt", "casual", "summer"] },
+  { name: "Winter Essentials Bundle", price: 150, image: "Products/winterbundle.jpg", category: "Bundles", tags: ["bundle", "winter", "coat", "scarf", "gloves"] },
+  { name: "Summer Outfit Pack", price: 130, image: "Products/summerpack.jpg", category: "Bundles", tags: ["summer", "bundle", "shorts", "tank", "hat"] },
+  { name: "Bundle 1", price: 100, image: "Products/bundle1.jpg", category: "Bundles", tags: ["bundle", "outfit", "set", "value"] },
+  { name: "Bundle 2", price: 90, image: "Products/bundle2.jpg", category: "Bundles", tags: ["bundle", "deal", "fashion", "accessories"] },
+  { name: "Bundle 3", price: 110, image: "Products/bundle3.jpg", category: "Bundles", tags: ["bundle", "premium", "outfit", "jackets"] },
+  { name: "Bundle 4", price: 95, image: "Products/bundle4.jpg", category: "Bundles", tags: ["bundle", "top", "bottom", "combo"] },
+  { name: "Bundle 5", price: 80, image: "Products/bundle5.jpg", category: "Bundles", tags: ["bundle", "casual", "sneakers", "tee"] },
+  { name: "Slim Fit Chinos", price: 60, image: "Products/chinos.jpg", category: "Bottoms", tags: ["chinos", "slim fit", "trousers", "pants"] },
+  { name: "Knitted Turtleneck", price: 40, image: "Products/turtleneck.jpg", category: "Tops", tags: ["knit", "turtleneck", "warm", "sweater"] },
+  { name: "Velvet Blazer", price: 85, image: "Products/blazer.jpg", category: "Jackets", tags: ["velvet", "blazer", "formal", "jacket"] },
+  { name: "Cropped Hoodie", price: 38, image: "Products/croppedhoodie.jpg", category: "Tops", tags: ["cropped", "hoodie", "sweatshirt", "casual"] },
+  { name: "Ankle Boots", price: 78, image: "Products/ankleboots.jpg", category: "Footwear", tags: ["ankle", "boots", "leather", "fall"] },
+  { name: "Pleated Midi Skirt", price: 50, image: "Products/pleatedskirt.jpg", category: "Bottoms", tags: ["pleated", "midi", "skirt", "feminine"] },
+  { name: "Wrap Dress", price: 68, image: "Products/wrapdress.jpg", category: "Dresses", tags: ["wrap", "dress", "chic", "brunch"] },
+  { name: "Retro Running Shoes", price: 60, image: "Products/retroshoes.jpg", category: "Footwear", tags: ["running", "retro", "shoes", "sneakers"] },
+{ name: "Linen Summer Shorts", price: 35, image: "Products/linenshorts.jpg", category: "Bottoms", tags: ["linen", "shorts", "summer", "casual"] }
+
+];
+
 
   const conversionRates = {
     USD: 1,
@@ -195,8 +288,10 @@
 
   const productList = document.getElementById("productList");
   const searchInput = document.getElementById("searchInput");
+  const categoryFilters = document.getElementById("categoryFilters");
+    const categories = ["All", ...new Set(products.map(p => p.category))];
   let filteredProducts = products;
-
+  let activeCategory = "All";
   function isInWishlist(name) {
     const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
     return wishlist.some(item => item.name === name);
@@ -218,66 +313,120 @@
   }
 
   function addToCart(name) {
-  const product = products.find(p => p.name === name);
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const existing = cart.find(item => item.name === name);
+    const product = products.find(p => p.name === name);
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existing = cart.find(item => item.name === name);
 
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    cart.push({ 
-      name: product.name,
-      price: product.price,
-      image: product.image,  
-      quantity: 1
-    });
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ 
+        name: product.name,
+        price: product.price,
+        image: product.image,  
+        quantity: 1
+      });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${name} added to cart!`);
   }
 
-  localStorage.setItem('cart', JSON.stringify(cart));
-  alert(`${name} added to cart!`);
+  function displayCategories() {
+  categoryFilters.innerHTML = "";
+  categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    btn.className = `category-button ${cat === activeCategory ? 'active' : ''}`;
+    btn.onclick = () => {
+      activeCategory = cat;
+      displayCategories(); // re-render categories to update highlight
+      filterProducts();
+    };
+    categoryFilters.appendChild(btn);
+  });
 }
 
   function displayProducts(items) {
-    productList.innerHTML = "";
-    items.forEach(p => {
-      const isWishlisted = isInWishlist(p.name);
-      productList.innerHTML += `
-        <div class="product-card">
-          <img src="${p.image}" alt="${p.name}" />
-          <h3>${p.name}</h3>
-          <p>${formatPrice(p.price)}</p>
-          <button onclick="addToCart('${p.name}')">Add to Cart</button>
-          <button class="wishlist" onclick="toggleWishlist('${p.name}')">
-            <i class="${isWishlisted ? 'fas' : 'far'} fa-heart ${isWishlisted ? 'wishlisted' : ''}"></i>
-          </button>
-        </div>
-      `;
-    });
+  productList.innerHTML = "";
+  if (items.length === 0) {
+    productList.innerHTML = `<p style="text-align: center; font-size: 2.2rem; color: #745;">No products found.</p>`;
+    return;
   }
-
-  displayProducts(products);
-
-  searchInput.addEventListener("input", () => {
-    const val = searchInput.value.toLowerCase();
-    filteredProducts = products.filter(p => p.name.toLowerCase().includes(val));
-    displayProducts(filteredProducts);
+  items.forEach(p => {
+    const isWishlisted = isInWishlist(p.name);
+    productList.innerHTML += `
+      <div class="product-card">
+        <img src="${p.image}" alt="${p.name}" />
+        <h3>${p.name}</h3>
+        <p>${formatPrice(p.price)}</p>
+        <small style="color: gray;">${p.category}</small>
+        <br>
+        <button onclick="addToCart('${p.name}')">Add to Cart</button>
+        <button class="wishlist" onclick="toggleWishlist('${p.name}')">
+          <i class="${isWishlisted ? 'fas' : 'far'} fa-heart ${isWishlisted ? 'wishlisted' : ''}"></i>
+        </button>
+      </div>
+    `;
   });
+}
+const clearSearchBtn = document.getElementById('clearSearchBtn');
 
-  document.getElementById("menu-toggle").addEventListener("click", () => {
-    document.getElementById("nav-links").classList.toggle("show");
-  });
-
-  const token = localStorage.getItem('token');
-  const profileMenu = document.getElementById('profileMenu');
-  const loginNav = document.getElementById('loginNav');
-  if (token) {
-    profileMenu.style.display = 'inline-block';
-    loginNav.style.display = 'none';
+searchInput.addEventListener('input', () => {
+  filterProducts();
+  // Show clear button if input not empty
+  if (searchInput.value.trim().length > 0) {
+    clearSearchBtn.classList.add('visible');
   } else {
-    profileMenu.style.display = 'none';
-    loginNav.style.display = 'inline-block';
+    clearSearchBtn.classList.remove('visible');
   }
-  // 🌟 Show Dashboard only if admin
+});
+
+clearSearchBtn.addEventListener('click', () => {
+  searchInput.value = '';
+  clearSearchBtn.classList.remove('visible');
+  filterProducts();
+});
+
+    function filterProducts() {
+  const searchVal = searchInput.value.toLowerCase();
+
+  filteredProducts = products.filter(p => {
+    const matchCategory =
+      activeCategory === "All" || p.category.toLowerCase() === activeCategory.toLowerCase();
+
+    const matchSearch =
+      p.name.toLowerCase().includes(searchVal) ||
+      p.category.toLowerCase().includes(searchVal) ||
+      (p.tags && p.tags.some(tag => tag.toLowerCase().includes(searchVal)));
+
+    if (searchVal === "") {
+      return matchCategory; // No search → category only
+    } else {
+      return matchSearch; // Search active → ignore category
+    }
+  });
+
+  displayProducts(filteredProducts);
+}
+
+
+
+    searchInput.addEventListener("input", filterProducts);
+
+    displayCategories();
+    displayProducts(products);
+
+  // --- Navbar & Profile Menu ---
+    document.getElementById('menu-toggle')
+      .addEventListener('click',()=> document.getElementById('nav-links').classList.toggle('show'));
+    const token=localStorage.getItem('token'),
+          pm= document.getElementById('profileMenu'),
+          ln= document.getElementById('loginNav');
+    if(token){ pm.style.display='inline-block'; ln.style.display='none'; }
+    else    { pm.style.display='none'; ln.style.display='inline-block'; }
+
+  //  Show Dashboard only if admin
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload?.isAdmin) {
@@ -286,26 +435,21 @@
     } catch (err) {
       console.warn("Invalid token payload", err);
     }
-  document.getElementById('profileToggle').addEventListener('click', (e) => {
-    e.preventDefault();
-    profileMenu.classList.toggle('active');
-  });
 
-  document.addEventListener('click', (e) => {
-    if (!profileMenu.contains(e.target)) {
-      profileMenu.classList.remove('active');
-    }
-  });
-
-  document.getElementById('logoutLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    localStorage.removeItem('token');
-    window.location.href = 'index.html';
-  });
+    document.getElementById('profileToggle').addEventListener('click',e=>{
+      e.preventDefault(); pm.classList.toggle('active');
+    });
+    document.addEventListener('click',e=>{
+      if(!pm.contains(e.target)) pm.classList.remove('active');
+    });
+    document.getElementById('logoutLink').addEventListener('click',e=>{
+      e.preventDefault(); localStorage.removeItem('token'); location.href='index.html';
+    });
 </script>
-<video autoplay muted id="bg-video">
-  <source src="shopbg.mp4" type="video/mp4">
-  Your browser does not support HTML5 video.
+
+<video autoplay loop muted playsinline id="bg-video">
+  <source src="shopbg.mp4" type="video/mp4" />
 </video>
+
 </body>
 </html>
