@@ -74,6 +74,22 @@
       background: #ccc;
       color: black;
     }
+  .add-all-btn {
+  background-color: #e63946;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 1rem;
+}
+.add-all-btn:hover {
+  background-color: #d62839;
+}
+
+
   </style>
 </head>
 <body>
@@ -105,8 +121,10 @@
 
 <section class="wishlist-section">
   <div class="wishlist-header">
-    <h1>Your Wishlist</h1>
-  </div>
+  <h1>Your Wishlist</h1>
+  <button id="addAllToCartBtn" class="add-all-btn">Add All to Cart</button>
+</div>
+
   <div class="wishlist-container" id="wishlistContainer"></div>
 </section>
 
@@ -125,27 +143,58 @@
 
   const wishlistContainer = document.getElementById("wishlistContainer");
 
-  function renderWishlist() {
-    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-    wishlistContainer.innerHTML = "";
-    if (wishlist.length === 0) {
-      wishlistContainer.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>No items in wishlist.</p>";
-      return;
-    }
-    wishlist.forEach((item, index) => {
-      wishlistContainer.innerHTML += `
-        <div class="wishlist-item">
-          <img src="${item.image}" alt="${item.name}" />
-          <div class="item-details">
-            <h3>${item.name}</h3>
-            <p>${formatPrice(item.price)}</p>
-            <button onclick="addToCart(${index})">Add to Cart</button>
-            <button onclick="removeItem(${index})" class="remove-btn">Remove</button>
-          </div>
-        </div>
-      `;
-    });
+  document.getElementById("addAllToCartBtn").addEventListener("click", () => {
+  const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+  if (wishlist.length === 0) {
+    alert("Your wishlist is empty.");
+    return;
   }
+
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  wishlist.forEach(item => {
+    const existing = cart.find(c => c.name === item.name);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({ ...item, quantity: 1 });
+    }
+  });
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.removeItem("wishlist");
+  renderWishlist();
+  alert("All wishlist items added to cart!");
+});
+
+  function renderWishlist() {
+  const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+  const addAllBtn = document.getElementById("addAllToCartBtn");
+  wishlistContainer.innerHTML = "";
+
+  if (wishlist.length === 0) {
+    wishlistContainer.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>No items in wishlist.</p>";
+    addAllBtn.style.display = "none";
+    return;
+  }
+
+  addAllBtn.style.display = "inline-block";
+
+  wishlist.forEach((item, index) => {
+    wishlistContainer.innerHTML += `
+      <div class="wishlist-item">
+        <img src="${item.image}" alt="${item.name}" />
+        <div class="item-details">
+          <h3>${item.name}</h3>
+          <p>${formatPrice(item.price)}</p>
+          <button onclick="addToCart(${index})">Add to Cart</button>
+          <button onclick="removeItem(${index})" class="remove-btn">Remove</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
 
   function addToCart(index) {
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
